@@ -1,0 +1,55 @@
+:root {
+  --color-surface: #fffceb;
+  --color-accent: #325118;
+  --color-accent-soft: color-mix(in srgb, var(--color-accent) 10%, var(--color-surface));
+  --color-ink: #24301a;
+  --color-muted: color-mix(in srgb, var(--color-ink) 70%, var(--color-surface));
+  --color-line: color-mix(in srgb, var(--color-ink) 12%, var(--color-surface));
+  --font-display: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  --font-body: "Avenir Next", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --radius-xl: 1.75rem;
+  --radius-lg: 1.25rem;
+  --shadow-soft: 0 20px 50px rgb(21 32 10 / 10%);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: light;
+  background: #fffceb;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #fffceb;
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: var(--color-surface);
+}

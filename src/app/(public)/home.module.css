@@ -1,0 +1,455 @@
+.hero {
+  padding: 0 0 2.5rem;
+  overflow-x: clip;
+}
+
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.76rem;
+  justify-content: center;
+}
+
+.heroActionsOverlay :global(a) {
+  background: rgb(255 252 235 / 10%);
+  border-color: rgb(255 252 235 / 24%);
+  color: #fffceb;
+  backdrop-filter: blur(12px);
+  font-size: 0.9rem;
+}
+
+.heroActionsOverlay :global(a):hover {
+  background: rgb(255 252 235 / 16%);
+  border-color: rgb(255 252 235 / 30%);
+}
+
+.heroActionsOverlay {
+  margin-top: 0.35rem;
+}
+
+.heroVisual {
+  position: relative;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+}
+
+.heroFrame {
+  height: min(86svh, 56rem);
+  position: relative;
+}
+
+.heroImage {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  background: transparent;
+}
+
+.heroPainting {
+  object-fit: cover;
+  object-position: right top;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 0.76rem;
+  padding: 2rem;
+  background: linear-gradient(180deg, rgb(17 17 17 / 14%), rgb(17 17 17 / 28%));
+  text-align: center;
+  color: #fffceb;
+}
+
+.heroOverlayTitle {
+  margin: 0;
+  max-width: 9ch;
+  font-family: var(--font-display);
+  font-size: clamp(3.06rem, 6.3vw, 5.94rem);
+  line-height: 0.92;
+  letter-spacing: -0.06em;
+}
+
+.heroOverlayRole {
+  margin: 0;
+  font-size: 0.9rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.aboutSection {
+  padding: 1.75rem 0 0;
+  overflow-x: clip;
+}
+
+.aboutEditorial {
+  display: grid;
+  gap: 1.8rem;
+  padding-top: 2rem;
+  min-width: 0;
+}
+
+.aboutIntro {
+  display: grid;
+  justify-items: center;
+  min-width: 0;
+}
+
+.aboutIntroMain {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.aboutEyebrow {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 0.9rem;
+}
+
+.aboutTitle {
+  margin: 0;
+  font-size: clamp(2.1rem, 5vw, 3.35rem);
+  line-height: 0.96;
+  letter-spacing: -0.05em;
+}
+
+.aboutSubtitle {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 1rem;
+}
+
+.aboutSummary,
+.aboutFootnote p {
+  margin: 0;
+  color: #325118;
+}
+
+.aboutSummary {
+  max-width: 35.125rem;
+  font-family: var(--font-body);
+  font-size: 1.25rem;
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+  text-indent: 3.8rem;
+  text-align: left;
+  justify-self: center;
+}
+
+.aboutMediaRow {
+  display: grid;
+  gap: 1.75rem;
+  align-items: start;
+}
+
+.aboutPhotoBlock {
+  position: relative;
+  width: 100%;
+  display: grid;
+  justify-items: center;
+}
+
+.aboutPhotoFrame {
+  overflow: hidden;
+  background: #e9e2d4;
+  aspect-ratio: 1;
+  min-width: 0;
+  width: 25rem;
+  max-width: 100%;
+  justify-self: right;
+}
+
+.aboutPhoto {
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center 38%;
+}
+
+.aboutPhotoNote {
+  color: #325118;
+  font-size: 0.76rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.aboutSecondary {
+  margin: 0;
+  max-width: 25.75rem;
+  font-family: var(--font-body);
+  font-size: 1.125rem;
+  font-weight: 400;
+  line-height: 1.22;
+  letter-spacing: -0.01em;
+  color: #325118;
+  text-wrap: pretty;
+  text-indent: 3.25rem;
+}
+
+.aboutFootnote {
+  display: grid;
+  gap: 1rem;
+}
+
+.aboutCard,
+.seriesCard,
+.workCard,
+.contactCard {
+  border: 1px solid var(--color-line);
+  background: rgb(255 255 255 / 35%);
+  box-shadow: var(--shadow-soft);
+}
+
+.aboutCard {
+  padding: 1.5rem;
+  display: grid;
+  gap: 0.75rem;
+  background: var(--color-accent);
+  color: var(--color-surface);
+}
+
+.aboutCard span,
+.workMeta span,
+.seriesCard span,
+.exhibitionStrip span {
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.72rem;
+}
+
+.aboutCard strong,
+.seriesCard strong {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.featuredGrid,
+.seriesGrid {
+  display: grid;
+  gap: 1rem;
+}
+
+.sectionLinkRow {
+  margin-top: 2.8rem;
+  display: flex;
+  justify-content: center;
+}
+
+.sectionLink {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.2em;
+ }
+.workMeta h3,
+.seriesCard strong,
+.seriesCard p,
+.exhibitionStrip p,
+.contactCard {
+  margin: 0;
+}
+
+.workMeta p,
+.seriesCard p {
+  color: var(--color-muted);
+  line-height: 1.7;
+}
+
+.seriesCard {
+  padding: 1.25rem;
+  display: grid;
+  gap: 0.7rem;
+}
+
+.exhibitionStrip {
+  display: grid;
+  gap: 1rem;
+}
+
+.exhibitionStrip > div {
+  padding: 1.2rem 1.4rem;
+  border: 1px solid var(--color-line);
+  background: color-mix(in srgb, var(--color-accent) 8%, var(--color-surface));
+}
+
+.exhibitionStrip p {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.exhibitionStrip span {
+  display: block;
+  margin-top: 0.4rem;
+  color: var(--color-muted);
+}
+
+.statement {
+  margin: 1rem 0;
+  padding: 2rem 0;
+  background: var(--color-accent);
+  color: var(--color-surface);
+  border-block: 1px solid rgb(255 252 235 / 14%);
+}
+
+.statementInner {
+  --title-color: var(--color-surface);
+  --title-eyebrow: color-mix(
+    in srgb,
+    var(--color-surface) 76%,
+    var(--color-accent)
+  );
+  --title-muted: color-mix(
+    in srgb,
+    var(--color-surface) 82%,
+    var(--color-accent)
+  );
+}
+
+.contactCard {
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  .aboutSummary {
+    padding-top: 0;
+  }
+
+  .aboutEditorial {
+    gap: 2rem;
+    padding-top: 2.4rem;
+  }
+
+  .aboutIntro {
+    justify-items: center;
+    text-align: left;
+  }
+
+  .aboutMediaRow {
+    grid-template-columns: minmax(23rem, 38rem) minmax(20rem, 1fr);
+    column-gap: 2rem;
+    align-items: start;
+  }
+
+  .aboutSummary {
+    margin-left: 10rem;
+  }
+
+  .aboutPhotoBlock {
+    width: 100%;
+    justify-self: start;
+  }
+
+  .aboutPhotoFrame {
+    width: 25rem;
+    max-width: 25rem;
+    justify-self: right;
+  }
+
+  .aboutPhoto {
+    height: 100%;
+  }
+
+  .aboutPhotoNote {
+    position: absolute;
+    top: 0.2rem;
+    left: calc(100% + 0.65rem);
+    white-space: nowrap;
+  }
+
+  .aboutSecondary {
+    align-self: end;
+    justify-self: end;
+    margin-bottom: 0.75rem;
+    margin-right: 4rem;
+    text-align: left;
+  }
+
+  .seriesGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .exhibitionStrip {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .hero {
+    padding: 0 0 2.5rem;
+  }
+
+  .heroFrame {
+    height: min(84svh, 46rem);
+  }
+
+  .heroPainting {
+    object-fit: cover;
+    object-position: right top;
+  }
+
+  .heroOverlay {
+    padding: 2rem;
+  }
+
+  .heroOverlayTitle {
+    font-size: clamp(2.43rem, 8.1vw, 3.78rem);
+  }
+
+  .heroOverlayRole {
+    font-size: 0.88rem;
+    letter-spacing: 0.2em;
+  }
+
+  .heroActionsOverlay {
+    width: min(100%, 19rem);
+    display: grid;
+    gap: 0.8rem;
+    margin-top: 0.2rem;
+  }
+
+  .heroActionsOverlay :global(a) {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .aboutPhotoFrame {
+    width: min(100%, 22rem);
+    aspect-ratio: 1;
+    justify-self: center;
+  }
+
+  .aboutSummary {
+    max-width: 100%;
+    font-size: 1rem;
+    line-height: 1.22;
+    text-indent: 2.2rem;
+  }
+
+  .aboutMediaRow {
+    gap: 1rem;
+    justify-content: center;
+  }
+
+  .aboutSecondary {
+    font-size: 0.95rem;
+    line-height: 1.22;
+    text-indent: 2rem;
+    text-align: left;
+  }
+
+  .aboutPhotoNote {
+    margin-top: 0.55rem;
+    position: static;
+  }
+}

@@ -1,0 +1,40 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      NEXT_TELEMETRY_DISABLED: 1
+      DATABASE_URL: mongodb://root:rootpassword@mongo:27017/julia_komarova?authSource=admin&replicaSet=rs0&serverSelectionTimeoutMS=750&connectTimeoutMS=750
+    depends_on:
+      - mongo
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./storage:/app/storage
+
+  mongo:
+    image: mongo:7
+    command:
+      [
+        "/bin/sh",
+        "-c",
+        "cp /etc/mongo-keyfile /tmp/mongo-keyfile && chmod 600 /tmp/mongo-keyfile && exec mongod --replSet rs0 --bind_ip_all --keyFile /tmp/mongo-keyfile",
+      ]
+    restart: unless-stopped
+    ports:
+      - '27017:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+      MONGO_INITDB_DATABASE: julia_komarova
+    volumes:
+      - mongo_data_v2:/data/db
+      - ./docker/mongo/keyfile:/etc/mongo-keyfile:ro
+
+volumes:
+  mongo_data_v2:

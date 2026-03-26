@@ -1,0 +1,219 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum ArtworkStatus {
+  AVAILABLE
+  SOLD
+  RESERVED
+  NOT_FOR_SALE
+}
+
+enum InquiryStatus {
+  NEW
+  READ
+  ARCHIVED
+}
+
+enum ExhibitionSection {
+  SOLO
+  GROUP
+  PRESS
+}
+
+model AdminUser {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  email        String   @unique
+  passwordHash String
+  name         String?
+  isActive     Boolean  @default(true)
+  lastLoginAt   DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Category {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  slug        String   @unique
+  title       String
+  titleRu     String?
+  titleEn     String?
+  description String?
+  descriptionRu String?
+  descriptionEn String?
+  sortOrder   Int      @default(0)
+  isVisible   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([isVisible, sortOrder])
+}
+
+model Artwork {
+  id                String        @id @default(auto()) @map("_id") @db.ObjectId
+  slug              String        @unique
+  title             String
+  titleRu           String?
+  titleEn           String?
+  description       String?
+  descriptionRu     String?
+  descriptionEn     String?
+  year              Int?
+  medium            String?
+  mediumRu          String?
+  mediumEn          String?
+  dimensions        String?
+  widthCm           Float?
+  heightCm          Float?
+  depthCm           Float?
+  status            ArtworkStatus @default(AVAILABLE)
+  isFeatured        Boolean       @default(false)
+  isPublished       Boolean       @default(false)
+  sortOrder         Int           @default(0)
+  priceOnRequest    Boolean       @default(true)
+  seoTitle          String?
+  seoTitleRu        String?
+  seoTitleEn        String?
+  seoDescription    String?
+  seoDescriptionRu  String?
+  seoDescriptionEn  String?
+  publishedAt       DateTime?
+  coverImageId      String?       @db.ObjectId
+  categoryIds       String[]
+  relatedArtworkIds String[]
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  coverImage ArtworkImage? @relation("ArtworkCover", fields: [coverImageId], references: [id], onDelete: SetNull, onUpdate: NoAction)
+  images     ArtworkImage[] @relation("ArtworkImages")
+  inquiries  Inquiry[]
+
+  @@index([isPublished, sortOrder])
+  @@index([isFeatured, isPublished])
+  @@index([status, isPublished])
+}
+
+model ArtworkImage {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  artworkId   String   @db.ObjectId
+  storageKey  String
+  url         String
+  width       Int?
+  height      Int?
+  alt         String?
+  blurDataUrl String?
+  sortOrder   Int      @default(0)
+  isPrimary   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  artwork  Artwork   @relation("ArtworkImages", fields: [artworkId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  coverFor Artwork[] @relation("ArtworkCover")
+
+  @@index([artworkId, sortOrder])
+}
+
+model Exhibition {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  slug           String   @unique
+  section        ExhibitionSection @default(GROUP)
+  categoryId     String?  @db.ObjectId
+  title          String
+  titleRu        String?
+  titleEn        String?
+  venue          String
+  city           String?
+  country        String?
+  startDate      DateTime
+  endDate        DateTime?
+  description    String?
+  descriptionRu  String?
+  descriptionEn  String?
+  sourceUrl      String?
+  posterImageUrl String?
+  seoTitle       String?
+  seoTitleRu     String?
+  seoTitleEn     String?
+  seoDescription String?
+  seoDescriptionRu String?
+  seoDescriptionEn String?
+  isPublished    Boolean  @default(false)
+  sortOrder      Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  category       ExhibitionCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull, onUpdate: NoAction)
+
+  @@index([isPublished, startDate])
+  @@index([categoryId, isPublished, sortOrder])
+}
+
+model ExhibitionCategory {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  slug          String   @unique
+  title         String
+  titleRu       String?
+  titleEn       String?
+  description   String?
+  descriptionRu String?
+  descriptionEn String?
+  sortOrder     Int      @default(0)
+  isVisible     Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  exhibitions Exhibition[]
+
+  @@index([isVisible, sortOrder])
+}
+
+model Inquiry {
+  id           String        @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  contact      String
+  message      String
+  status       InquiryStatus @default(NEW)
+  artworkId    String?       @db.ObjectId
+  artworkTitle String?
+  source       String?
+  ipHash       String?
+  userAgent    String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  artwork Artwork? @relation(fields: [artworkId], references: [id], onDelete: SetNull, onUpdate: NoAction)
+
+  @@index([status, createdAt])
+  @@index([artworkId, createdAt])
+}
+
+model SiteSettings {
+  id                    String   @id @default(auto()) @map("_id") @db.ObjectId
+  singletonKey          String   @unique @default("site")
+  heroTitle             String?
+  heroTitleRu           String?
+  heroTitleEn           String?
+  heroSubtitle          String?
+  heroSubtitleRu        String?
+  heroSubtitleEn        String?
+  aboutShort            String?
+  aboutShortRu          String?
+  aboutShortEn          String?
+  artistStatement       String?
+  artistStatementRu     String?
+  artistStatementEn     String?
+  contactEmail          String?
+  telegramUsername      String?
+  instagramUrl          String?
+  seoDefaultTitle       String?
+  seoDefaultTitleRu     String?
+  seoDefaultTitleEn     String?
+  seoDefaultDescription String?
+  seoDefaultDescriptionRu String?
+  seoDefaultDescriptionEn String?
+  updatedAt             DateTime @updatedAt
+}

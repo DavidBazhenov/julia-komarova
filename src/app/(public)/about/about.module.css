@@ -1,0 +1,149 @@
+.page {
+  padding: 2.5rem 0 5.5rem;
+  display: grid;
+  gap: 2.5rem;
+  color: #325118;
+}
+
+.hero {
+  justify-items: center;
+}
+
+.logoBlock {
+  width: min(100%, 28rem);
+}
+
+.logo {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+}
+
+.portraitBlock {
+  display: grid;
+  justify-items: center;
+}
+
+.portraitFrame {
+  position: relative;
+  width: min(100%, 26.4rem);
+  aspect-ratio: 1;
+  overflow: hidden;
+}
+
+.portrait {
+  object-fit: cover;
+  object-position: center top;
+}
+
+.textComposition {
+  display: grid;
+  gap: 1.8rem;
+}
+
+.freeParagraph {
+  margin: 0;
+  font-family: var(--font-display);
+  color: #325118;
+  font-size: clamp(1.05rem, 1.6vw, 1.3rem);
+  line-height: 1.18;
+  text-wrap: balance;
+  text-indent: 2.8rem;
+}
+
+.p1,
+.p2,
+.p3 {
+  max-width: 42rem;
+}
+
+.p1 {
+  justify-self: start;
+  max-width: 46rem;
+}
+
+.p2 {
+  justify-self: right;
+  max-width: 29rem;
+  margin-left: 2rem;
+  text-align: left;
+}
+
+.p3 {
+  justify-self: center;
+  text-align: center;
+}
+
+.statementSection {
+  display: grid;
+  gap: 1.75rem;
+  padding-top: 3rem;
+}
+
+.statementLabel {
+  font-family: var(--font-display);
+  color: #325118;
+  font-size: clamp(1.8rem, 2.5vw, 2.6rem);
+  line-height: 1;
+}
+
+.statementBody {
+  display: grid;
+  gap: 1.1rem;
+}
+
+.statementParagraph {
+  margin: 0;
+  color: #325118;
+  font-size: clamp(0.82rem, 1vw, 0.94rem);
+  line-height: 1.42;
+  text-align: left;
+  text-indent: 2.9rem;
+  text-wrap: pretty;
+}
+
+@media (min-width: 900px) {
+  .textComposition {
+    padding-inline: 2.5rem;
+  }
+
+  .p1 {
+    margin-left: 3.75rem;
+  }
+
+  .p2 {
+    margin-left: 13rem;
+    margin-right: 0;
+  }
+
+  .statementSection {
+    grid-template-columns: 12rem minmax(0, 1fr);
+    column-gap: 2rem;
+    align-items: start;
+  }
+
+  .statementBody {
+    padding-top: 0.15rem;
+  }
+
+  .s1 {
+    max-width: 28rem;
+    justify-self: start;
+  }
+
+  .s2 {
+    max-width: 30rem;
+    justify-self: center;
+  }
+
+  .s3 {
+    max-width: 34rem;
+    justify-self: start;
+  }
+
+  .s4 {
+    max-width: 28rem;
+    justify-self: center;
+  }
+}

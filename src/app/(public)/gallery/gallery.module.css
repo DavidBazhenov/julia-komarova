@@ -1,0 +1,153 @@
+.page {
+  padding: 2rem 0 4rem;
+  overflow-x: clip;
+}
+
+.filterBar {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 0.35rem;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+
+.filterBar > * {
+  flex: 0 0 auto;
+}
+
+.grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.gridSection {
+  display: grid;
+  gap: 1rem;
+}
+
+.card {
+  display: grid;
+}
+
+.footerRow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  color: var(--color-muted);
+}
+
+.emptyState {
+  padding: 1.5rem;
+  border: 1px solid var(--color-line);
+  background: rgb(255 255 255 / 30%);
+  color: var(--color-muted);
+  line-height: 1.7;
+}
+
+.scrollStatus {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.25rem 0;
+}
+
+.scrollStatusText {
+  margin: 0;
+  color: var(--color-muted);
+}
+
+.loadMoreButton {
+  min-height: 2.75rem;
+  padding: 0.7rem 1rem;
+  border: 1px solid var(--color-line);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 55%);
+  color: inherit;
+  cursor: pointer;
+}
+
+.loadMoreButton:disabled {
+  opacity: 0.65;
+  cursor: progress;
+}
+
+.sentinel {
+  height: 1px;
+}
+
+.skeletonGrid {
+  display: grid;
+  gap: 1rem;
+}
+
+.skeletonCard {
+  overflow: hidden;
+  background: transparent;
+  padding: 0;
+}
+
+.skeletonMedia {
+  min-height: 20rem;
+  background:
+    linear-gradient(110deg, rgb(255 255 255 / 10%) 8%, rgb(255 255 255 / 26%) 18%, rgb(255 255 255 / 10%) 33%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+
+.skeletonMeta {
+  display: grid;
+  gap: 0.65rem;
+  padding: 1rem 1.1rem 1.2rem;
+}
+
+.skeletonLine,
+.skeletonLineWide,
+.skeletonLineNarrow {
+  height: 0.7rem;
+  border-radius: 999px;
+  background:
+    linear-gradient(110deg, rgb(255 255 255 / 10%) 8%, rgb(255 255 255 / 26%) 18%, rgb(255 255 255 / 10%) 33%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+
+.skeletonLine {
+  width: 38%;
+}
+
+.skeletonLineWide {
+  width: 68%;
+}
+
+.skeletonLineNarrow {
+  width: 52%;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .skeletonGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

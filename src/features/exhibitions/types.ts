@@ -1,0 +1,31 @@
+export type ExhibitionListItem = {
+  id: string;
+  slug: string;
+  section: "SOLO" | "GROUP" | "PRESS";
+  categoryId: string | null;
+  category?: {
+    id: string;
+    slug: string;
+    title: string;
+  };
+  title: string;
+  titleRu?: string;
+  titleEn?: string;
+  venue: string;
+  city?: string;
+  country?: string;
+  startDate: string;
+  endDate: string | null;
+  sourceUrl: string | null;
+  posterImageUrl: string | null;
+  description?: string;
+  descriptionRu?: string;
+  descriptionEn?: string;
+  seoTitle?: string;
+  seoDescription?: string;
+  seoTitleRu?: string;
+  seoTitleEn?: string;
+  seoDescriptionRu?: string;
+  seoDescriptionEn?: string;
+  isPublished: boolean;
+};

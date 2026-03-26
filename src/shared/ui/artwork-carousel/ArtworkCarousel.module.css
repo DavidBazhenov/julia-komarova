@@ -1,0 +1,55 @@
+.root {
+  position: relative;
+  padding-top: 4rem;
+}
+
+.swiper {
+  overflow: hidden;
+}
+
+.slide {
+  height: auto;
+}
+
+.navButton {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 2;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid var(--color-line);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 72%);
+  color: inherit;
+  cursor: pointer;
+}
+
+.navPrev {
+  right: 3rem;
+}
+
+.homeNext,
+.relatedNext {
+  right: 0;
+}
+
+.homePrev,
+.relatedPrev {
+  right: 3rem;
+}
+
+.navButton:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+@media (max-width: 767px) {
+  .root {
+    padding-top: 0;
+  }
+
+  .navButton {
+    display: none;
+  }
+}
