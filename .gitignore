@@ -15,5 +15,5 @@ npm-debug.log*
 pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-storage
+/storage
 prisma/dev.db
