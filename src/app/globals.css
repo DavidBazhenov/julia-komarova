@@ -5,6 +5,10 @@
   --color-ink: #24301a;
   --color-muted: color-mix(in srgb, var(--color-ink) 70%, var(--color-surface));
   --color-line: color-mix(in srgb, var(--color-ink) 12%, var(--color-surface));
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-right: env(safe-area-inset-right, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-left: env(safe-area-inset-left, 0px);
   --font-display: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
   --font-body: "Avenir Next", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   --radius-xl: 1.75rem;
