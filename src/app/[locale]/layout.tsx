@@ -38,10 +38,9 @@ export default async function LocaleLayout({
 
   const locale: Locale = rawLocale;
   setRequestLocale(locale);
-  const [tNav, tHome, tContacts] = await Promise.all([
+  const [tNav, tHome] = await Promise.all([
     getTranslations({ locale, namespace: "Nav" }),
     getTranslations({ locale, namespace: "Home" }),
-    getTranslations({ locale, namespace: "Contacts" }),
   ]);
 
   return (

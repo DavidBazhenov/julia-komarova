@@ -96,12 +96,13 @@ export default async function HomePage({
         <div className={styles.heroVisual}>
           <div className={styles.heroFrame}>
             <div className={styles.heroImage}>
-              <img
+              <Image
                 src={heroImageSrc}
                 alt={heroImageAlt}
+                fill
+                priority
+                unoptimized
                 className={styles.heroPainting}
-                loading="eager"
-                fetchPriority="high"
               />
               <div className={styles.heroOverlay}>
                 <h1 className={styles.heroOverlayTitle}>Julia Komarova</h1>
