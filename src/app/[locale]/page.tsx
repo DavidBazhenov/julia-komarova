@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
+import { unstable_noStore as noStore } from "next/cache";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 
@@ -57,6 +58,11 @@ export default async function HomePage({
     getTranslations({ locale, namespace: "StructuredData" }),
   ]);
   const data = await loadLocalizedHomeData(locale);
+
+  if (data.featuredArtworks.length === 0 && data.exhibitions.length === 0) {
+    noStore();
+  }
+
   const heroImageSrc = "/images/hero-home.jpg";
   const homeAboutImageSrc = "/images/about-photo.jpg?v=20260326";
   const heroImageAlt =
