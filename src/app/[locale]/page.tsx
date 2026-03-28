@@ -1,6 +1,5 @@
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
-import { unstable_noStore as noStore } from "next/cache";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 
@@ -17,7 +16,7 @@ import { siteConfig } from "@/shared/lib/site";
 import { buildArtistStructuredData, buildWebsiteStructuredData } from "@/shared/lib/structured-data";
 import styles from "../(public)/home.module.css";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 export async function generateMetadata({
   params,
@@ -45,8 +44,6 @@ export default async function HomePage({
 }: {
   params: Promise<{ locale: string }>;
 }) {
-  noStore();
-
   const { locale: rawLocale } = await params;
 
   if (!isLocale(rawLocale)) {
@@ -60,7 +57,7 @@ export default async function HomePage({
     getTranslations({ locale, namespace: "StructuredData" }),
   ]);
   const data = await loadLocalizedHomeData(locale);
-  const heroImageSrc = "/images/hero-home.png";
+  const heroImageSrc = "/images/hero-home.jpg";
   const homeAboutImageSrc = "/images/about-photo.jpg?v=20260326";
   const heroImageAlt =
     data.featuredArtworks[0]?.coverImage?.alt ||

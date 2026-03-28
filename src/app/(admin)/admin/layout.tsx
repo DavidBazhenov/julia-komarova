@@ -14,43 +14,37 @@ export default async function AdminLayout({ children }: { children: ReactNode })
   return (
     <div className={styles.shell}>
       <div className={styles.frame}>
-        <header className={styles.header}>
-          <div className={styles.brand}>
-            <p className={styles.eyebrow}>Admin</p>
-            <h1 className={styles.brandTitle}>Julia Komarova CMS</h1>
-            <p className={styles.muted}>
-              {session ? `Signed in as ${session.email}` : "Unauthenticated"}
-            </p>
-          </div>
-          <nav className={styles.nav}>
-            <Link className={styles.navLink} href="/admin">
-              Dashboard
-            </Link>
-            <Link className={styles.navLink} href="/admin/artworks">
-              Artworks
-            </Link>
-            <Link className={styles.navLink} href="/admin/categories">
-              Categories
-            </Link>
-            <Link className={styles.navLink} href="/admin/exhibitions">
-              Exhibitions
-            </Link>
-            <Link className={styles.navLink} href="/admin/exhibition-categories">
-              Exhibition categories
-            </Link>
-            {session ? (
+        {session ? (
+          <header className={styles.header}>
+            <div className={styles.brand}>
+              <p className={styles.eyebrow}>Admin</p>
+              <h1 className={styles.brandTitle}>Julia Komarova CMS</h1>
+              <p className={styles.muted}>{`Signed in as ${session.email}`}</p>
+            </div>
+            <nav className={styles.nav}>
+              <Link className={styles.navLink} href="/admin">
+                Dashboard
+              </Link>
+              <Link className={styles.navLink} href="/admin/artworks">
+                Artworks
+              </Link>
+              <Link className={styles.navLink} href="/admin/categories">
+                Categories
+              </Link>
+              <Link className={styles.navLink} href="/admin/exhibitions">
+                Exhibitions
+              </Link>
+              <Link className={styles.navLink} href="/admin/exhibition-categories">
+                Exhibition categories
+              </Link>
               <form action={logoutAdminAction}>
                 <button className={styles.ghostButton} type="submit">
                   Logout
                 </button>
               </form>
-            ) : (
-              <Link className={styles.navLink} href="/admin/login">
-                Login
-              </Link>
-            )}
-          </nav>
-        </header>
+            </nav>
+          </header>
+        ) : null}
         <main className={styles.content}>{children}</main>
       </div>
     </div>
