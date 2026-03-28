@@ -9,7 +9,7 @@ services:
     environment:
       NODE_ENV: production
       NEXT_TELEMETRY_DISABLED: 1
-      DATABASE_URL: mongodb://root:rootpassword@mongo:27017/julia_komarova?authSource=admin&replicaSet=rs0&serverSelectionTimeoutMS=750&connectTimeoutMS=750
+      DATABASE_URL: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongo:27017/${MONGO_INITDB_DATABASE}?authSource=admin&replicaSet=rs0&serverSelectionTimeoutMS=750&connectTimeoutMS=750
     depends_on:
       - mongo
     ports:
@@ -29,9 +29,9 @@ services:
     ports:
       - '27017:27017'
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: rootpassword
-      MONGO_INITDB_DATABASE: julia_komarova
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
     volumes:
       - mongo_data_v2:/data/db
       - ./docker/mongo/keyfile:/etc/mongo-keyfile:ro
