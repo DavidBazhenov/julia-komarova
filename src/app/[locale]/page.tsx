@@ -63,7 +63,7 @@ export default async function HomePage({
     noStore();
   }
 
-  const heroImageSrc = "/images/hero-home.jpg";
+  const heroImageSrc = "/images/hero-home-optimized.webp";
   const homeAboutImageSrc = "/images/about-photo.jpg?v=20260326";
   const heroImageAlt =
     data.featuredArtworks[0]?.coverImage?.alt ||
