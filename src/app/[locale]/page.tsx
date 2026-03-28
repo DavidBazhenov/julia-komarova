@@ -63,7 +63,7 @@ export default async function HomePage({
     noStore();
   }
 
-  const heroImageSrc = "/images/hero-home-optimized.webp";
+  const heroImageSrc = "/images/hero-home-direct.webp";
   const homeAboutImageSrc = "/images/about-photo.jpg?v=20260326";
   const heroImageAlt =
     data.featuredArtworks[0]?.coverImage?.alt ||
@@ -96,13 +96,12 @@ export default async function HomePage({
         <div className={styles.heroVisual}>
           <div className={styles.heroFrame}>
             <div className={styles.heroImage}>
-              <Image
+              <img
                 src={heroImageSrc}
                 alt={heroImageAlt}
-                fill
-                priority
-                sizes="100vw"
                 className={styles.heroPainting}
+                loading="eager"
+                fetchPriority="high"
               />
               <div className={styles.heroOverlay}>
                 <h1 className={styles.heroOverlayTitle}>Julia Komarova</h1>
