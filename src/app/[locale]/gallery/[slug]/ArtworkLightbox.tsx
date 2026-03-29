@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 
 import styles from "@/app/(public)/gallery/[slug]/artwork.module.css";
+import { shouldBypassImageOptimization } from "@/shared/lib/images";
 
 type ArtworkLightboxImage = {
   id: string;
@@ -125,6 +126,7 @@ export function ArtworkLightbox({ title, images, labels }: ArtworkLightboxProps)
                   alt={activeImage.alt || title}
                   fill
                   sizes="100vw"
+                  unoptimized={shouldBypassImageOptimization(activeImage.displayUrl)}
                   className={`${styles.lightboxImage} ${zoomed ? styles.lightboxImageZoomed : ""}`}
                 />
               </div>

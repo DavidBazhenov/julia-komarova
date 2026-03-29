@@ -6,12 +6,12 @@ export function getAuthSecret(): string {
   return getRequiredEnv("AUTH_SECRET");
 }
 
-export function getFallbackAdminEmail(): string | null {
+export function getAdminEmail(): string | null {
   const value = getOptionalEnv("ADMIN_EMAIL", "").trim().toLowerCase();
   return value.length > 0 ? value : null;
 }
 
-export function getFallbackAdminPasswordHash(): string | null {
-  const value = getOptionalEnv("ADMIN_PASSWORD_HASH", "").trim();
+export function getAdminPassword(): string | null {
+  const value = getOptionalEnv("ADMIN_PASSWORD", "").trim();
   return value.length > 0 ? value : null;
 }

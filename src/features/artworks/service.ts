@@ -1,5 +1,7 @@
+import { unstable_cache } from 'next/cache';
 import { prisma } from '@/server/db';
 import { markDatabaseHealthy, markDatabaseUnavailable, shouldBypassDatabase } from '@/server/db/prisma';
+import { CONTENT_CACHE_REVALIDATE_SECONDS, contentTags } from '@/server/revalidation/tags';
 import { defaultLocale, pickLocalizedValue, type SiteLocale } from '@/shared/lib/i18n';
 
 import type { CategoryListItem } from '../categories/types';
@@ -23,6 +25,106 @@ type ArtworkImageRecord = {
   isPrimary: boolean;
   storageKey: string;
 };
+
+type ArtworkListRecord = {
+  id: string;
+  slug: string;
+  title: string;
+  titleRu?: string | null;
+  titleEn?: string | null;
+  year: number | null;
+  status: ArtworkListItem['status'];
+  description: string | null;
+  descriptionRu?: string | null;
+  descriptionEn?: string | null;
+  categoryIds: string[];
+  relatedArtworkIds: string[];
+  coverImage: ArtworkImageRecord | null;
+  images: ArtworkImageRecord[];
+};
+
+type ArtworkDetailRecord = ArtworkListRecord & {
+  medium: string | null;
+  dimensions: string | null;
+};
+
+const getCachedArtworkListRecords = unstable_cache(
+  async (
+    publishedOnly: boolean,
+    featuredOnly: boolean,
+    limit: number,
+    categoryId: string | null,
+  ): Promise<ArtworkListRecord[]> =>
+    prisma.artwork.findMany({
+      where: {
+        ...(publishedOnly ? { isPublished: true } : {}),
+        ...(featuredOnly ? { isFeatured: true } : {}),
+        ...(categoryId ? { categoryIds: { has: categoryId } } : {}),
+      },
+      orderBy: [{ sortOrder: 'asc' }, { year: 'desc' }, { titleRu: 'asc' }, { title: 'asc' }],
+      take: limit,
+      include: {
+        coverImage: {
+          select: {
+            id: true,
+            alt: true,
+            sortOrder: true,
+            isPrimary: true,
+            storageKey: true,
+          },
+        },
+        images: {
+          take: 1,
+          orderBy: { sortOrder: 'asc' },
+          select: {
+            id: true,
+            alt: true,
+            sortOrder: true,
+            isPrimary: true,
+            storageKey: true,
+          },
+        },
+      },
+    }),
+  ['public-artwork-list-records'],
+  {
+    tags: [contentTags.artworks],
+    revalidate: CONTENT_CACHE_REVALIDATE_SECONDS,
+  },
+);
+
+const getCachedArtworkRecordBySlug = unstable_cache(
+  async (slug: string): Promise<ArtworkDetailRecord | null> =>
+    prisma.artwork.findUnique({
+      where: { slug },
+      include: {
+        images: {
+          select: {
+            id: true,
+            alt: true,
+            sortOrder: true,
+            isPrimary: true,
+            storageKey: true,
+          },
+          orderBy: { sortOrder: 'asc' },
+        },
+        coverImage: {
+          select: {
+            id: true,
+            alt: true,
+            sortOrder: true,
+            isPrimary: true,
+            storageKey: true,
+          },
+        },
+      },
+    }),
+  ['public-artwork-record-by-slug'],
+  {
+    tags: [contentTags.artworks],
+    revalidate: CONTENT_CACHE_REVALIDATE_SECONDS,
+  },
+);
 
 function toCategorySummary(
   category: CategoryListItem | undefined,
@@ -62,87 +164,64 @@ function mapArtworkCoverImage(
 }
 
 export async function listArtworks(input: ListArtworksInput = {}): Promise<ArtworkListItem[]> {
-  const limit = clampLimit(input.limit, 12, 24);
+  const limit = clampLimit(input.limit, 12, 100);
   const { locale = defaultLocale } = input;
   if (shouldBypassDatabase()) {
     return [];
   }
   try {
-    const items = await prisma.artwork.findMany({
-      where: {
-        ...(input.publishedOnly ?? true ? { isPublished: true } : {}),
-        ...(input.featuredOnly ? { isFeatured: true } : {}),
-      },
-      orderBy: [{ sortOrder: 'asc' }, { year: 'desc' }, { titleRu: 'asc' }, { title: 'asc' }],
-      take: limit,
-      include: {
-        coverImage: {
-          select: {
-            id: true,
-            alt: true,
-            sortOrder: true,
-            isPrimary: true,
-            storageKey: true,
-          },
-        },
-        images: {
-          take: 1,
-          orderBy: { sortOrder: 'asc' },
-          select: {
-            id: true,
-            alt: true,
-            sortOrder: true,
-            isPrimary: true,
-            storageKey: true,
-          },
-        },
-      },
-    });
+    const categories = await listCategories({ visibleOnly: false, locale });
+    const categoryMap = new Map(categories.map((category) => [category.id, category]));
+    const categoryId = input.categorySlug
+      ? categories.find((category) => category.slug === input.categorySlug)?.id ?? null
+      : null;
+
+    if (input.categorySlug && !categoryId) {
+      return [];
+    }
+
+    const items = await getCachedArtworkListRecords(
+      input.publishedOnly ?? true,
+      input.featuredOnly ?? false,
+      limit,
+      categoryId,
+    );
 
     if (items.length > 0) {
       markDatabaseHealthy();
-      const categories = await listCategories({ visibleOnly: false, locale });
-      const categoryMap = new Map(categories.map((category) => [category.id, category]));
-
-      return items
-        .filter((item) =>
-          input.categorySlug
-            ? item.categoryIds.some((categoryId) => categoryMap.get(categoryId)?.slug === input.categorySlug)
-            : true,
-        )
-        .slice(0, limit)
-        .map((item) => ({
-          id: item.id,
-          slug: item.slug,
-          title:
-            pickLocalizedValue(locale, {
-              ru: item.titleRu,
-              en: item.titleEn,
-              fallback: item.title,
-            }) ?? item.title,
-          titleRu: item.titleRu ?? item.title,
-          titleEn: item.titleEn ?? item.title,
-          year: item.year,
-          status: item.status,
-          excerpt:
-            pickLocalizedValue(locale, {
-              ru: item.descriptionRu,
-              en: item.descriptionEn,
-              fallback: item.description,
-            }) ?? undefined,
-          excerptRu: item.descriptionRu ?? item.description ?? undefined,
-          excerptEn: item.descriptionEn ?? item.description ?? undefined,
-          coverImage: mapArtworkCoverImage(item.coverImage, item.images[0]),
-          categories: item.categoryIds
-            .map((categoryId) => toCategorySummary(categoryMap.get(categoryId)))
-            .filter((category): category is Pick<CategoryListItem, 'id' | 'slug' | 'title'> => category !== null),
-        }));
     }
-  } catch {
+
+    return items.map((item) => ({
+      id: item.id,
+      slug: item.slug,
+      title:
+        pickLocalizedValue(locale, {
+          ru: item.titleRu,
+          en: item.titleEn,
+          fallback: item.title,
+        }) ?? item.title,
+      titleRu: item.titleRu ?? item.title,
+      titleEn: item.titleEn ?? item.title,
+      year: item.year,
+      status: item.status,
+      excerpt:
+        pickLocalizedValue(locale, {
+          ru: item.descriptionRu,
+          en: item.descriptionEn,
+          fallback: item.description,
+        }) ?? undefined,
+      excerptRu: item.descriptionRu ?? item.description ?? undefined,
+      excerptEn: item.descriptionEn ?? item.description ?? undefined,
+      coverImage: mapArtworkCoverImage(item.coverImage, item.images[0]),
+      categories: item.categoryIds
+        .map((resolvedCategoryId) => toCategorySummary(categoryMap.get(resolvedCategoryId)))
+        .filter((category): category is Pick<CategoryListItem, 'id' | 'slug' | 'title'> => category !== null),
+    }));
+  } catch (error) {
+    console.error('Failed to load artworks.', error);
     markDatabaseUnavailable();
     return [];
   }
-  return [];
 }
 
 export async function listFeaturedArtworks(
@@ -181,30 +260,7 @@ export async function getArtworkBySlug(
   }
 
   try {
-    const item = await prisma.artwork.findUnique({
-      where: { slug },
-      include: {
-        images: {
-          select: {
-            id: true,
-            alt: true,
-            sortOrder: true,
-            isPrimary: true,
-            storageKey: true,
-          },
-          orderBy: { sortOrder: 'asc' },
-        },
-        coverImage: {
-          select: {
-            id: true,
-            alt: true,
-            sortOrder: true,
-            isPrimary: true,
-            storageKey: true,
-          },
-        },
-      },
-    });
+    const item = await getCachedArtworkRecordBySlug(slug);
 
     if (item) {
       markDatabaseHealthy();
@@ -254,7 +310,8 @@ export async function getArtworkBySlug(
           .filter((artwork) => item.relatedArtworkIds.includes(artwork.id)),
       };
     }
-  } catch {
+  } catch (error) {
+    console.error(`Failed to load artwork by slug: ${slug}.`, error);
     markDatabaseUnavailable();
     return null;
   }

@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import { shouldBypassImageOptimization } from "@/shared/lib/images";
+
 import styles from "./ArtworkCard.module.css";
 
 type ArtworkCardProps = {
@@ -34,6 +36,7 @@ export function ArtworkCard({
               alt={imageAlt || title}
               fill
               sizes="(min-width: 960px) 30vw, 90vw"
+              unoptimized={shouldBypassImageOptimization(imageUrl)}
               className={styles.image}
             />
           ) : (

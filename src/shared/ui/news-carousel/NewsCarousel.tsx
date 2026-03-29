@@ -5,6 +5,7 @@ import { Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 import type { LocalizedExhibitionItem } from "@/app/[locale]/content";
+import { shouldBypassImageOptimization } from "@/shared/lib/images";
 
 import styles from "./NewsCarousel.module.css";
 
@@ -78,6 +79,7 @@ export function NewsCarousel({ items, fallbackHref }: NewsCarouselProps) {
                       alt={item.title}
                       fill
                       sizes="(max-width: 767px) 70vw, (max-width: 959px) 42vw, 28vw"
+                      unoptimized={shouldBypassImageOptimization(item.posterImageUrl)}
                       className={styles.image}
                     />
                   ) : (

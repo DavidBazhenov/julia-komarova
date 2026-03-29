@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
+import logoImage from "../../../public/images/jk-logo.png";
 
 import {
   buildLocalePath,
@@ -50,7 +51,7 @@ export default async function LocaleLayout({
         <Container className={styles.headerInner}>
           <Link href={buildLocalePath(locale, "/")} className={styles.brand} aria-label="Julia Komarova">
             <Image
-              src="/images/jk-logo.png"
+              src={logoImage}
               alt="Julia Komarova logo"
               width={1449}
               height={736}
@@ -102,7 +103,7 @@ export default async function LocaleLayout({
           <div className={styles.footerTop}>
             <Link href={buildLocalePath(locale, "/")} className={styles.footerBrand} aria-label="Julia Komarova">
               <Image
-                src="/images/jk-logo.png"
+                src={logoImage}
                 alt="Julia Komarova logo"
                 width={1449}
                 height={736}

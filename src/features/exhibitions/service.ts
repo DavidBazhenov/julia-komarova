@@ -1,5 +1,7 @@
+import { unstable_cache } from 'next/cache';
 import { prisma } from '@/server/db';
 import { markDatabaseHealthy, markDatabaseUnavailable, shouldBypassDatabase } from '@/server/db/prisma';
+import { CONTENT_CACHE_REVALIDATE_SECONDS, contentTags } from '@/server/revalidation/tags';
 import { defaultLocale, pickLocalizedValue, type SiteLocale } from '@/shared/lib/i18n';
 
 import type { ExhibitionListItem } from './types';
@@ -11,40 +13,83 @@ export type ListExhibitionsInput = {
   locale?: SiteLocale;
 };
 
-function mapExhibitionRecord(
-  record: {
+type ExhibitionRecord = {
+  id: string;
+  slug: string;
+  section?: 'SOLO' | 'GROUP' | 'PRESS' | null;
+  categoryId?: string | null;
+  category?: {
     id: string;
     slug: string;
-    section?: 'SOLO' | 'GROUP' | 'PRESS' | null;
-    categoryId?: string | null;
-    category?: {
-      id: string;
-      slug: string;
-      title: string;
-      titleRu?: string | null;
-      titleEn?: string | null;
-    } | null;
     title: string;
     titleRu?: string | null;
     titleEn?: string | null;
-    venue: string;
-    city: string | null;
-    country: string | null;
-    startDate: Date;
-    endDate: Date | null;
-    sourceUrl?: string | null;
-    posterImageUrl?: string | null;
-    description: string | null;
-    descriptionRu?: string | null;
-    descriptionEn?: string | null;
-    seoTitle?: string | null;
-    seoTitleRu?: string | null;
-    seoTitleEn?: string | null;
-    seoDescription?: string | null;
-    seoDescriptionRu?: string | null;
-    seoDescriptionEn?: string | null;
-    isPublished: boolean;
+  } | null;
+  title: string;
+  titleRu?: string | null;
+  titleEn?: string | null;
+  venue: string;
+  city: string | null;
+  country: string | null;
+  startDate: Date | string;
+  endDate: Date | string | null;
+  sourceUrl?: string | null;
+  posterImageUrl?: string | null;
+  description: string | null;
+  descriptionRu?: string | null;
+  descriptionEn?: string | null;
+  seoTitle?: string | null;
+  seoTitleRu?: string | null;
+  seoTitleEn?: string | null;
+  seoDescription?: string | null;
+  seoDescriptionRu?: string | null;
+  seoDescriptionEn?: string | null;
+  isPublished: boolean;
+};
+
+const getCachedExhibitionListRecords = unstable_cache(
+  async (publishedOnly: boolean, limit: number | null): Promise<ExhibitionRecord[]> =>
+    prisma.exhibition.findMany({
+      where: publishedOnly ? { isPublished: true } : undefined,
+      include: {
+        category: true,
+      },
+      orderBy: [
+        { sortOrder: 'asc' },
+        { startDate: 'desc' },
+        { titleRu: 'asc' },
+        { title: 'asc' },
+      ],
+      take: limit ?? undefined,
+    }),
+  ['public-exhibition-list-records'],
+  {
+    tags: [contentTags.exhibitions],
+    revalidate: CONTENT_CACHE_REVALIDATE_SECONDS,
   },
+);
+
+const getCachedExhibitionRecordBySlug = unstable_cache(
+  async (slug: string): Promise<ExhibitionRecord | null> =>
+    prisma.exhibition.findUnique({
+      where: { slug },
+      include: {
+        category: true,
+      },
+    }),
+  ['public-exhibition-record-by-slug'],
+  {
+    tags: [contentTags.exhibitions],
+    revalidate: CONTENT_CACHE_REVALIDATE_SECONDS,
+  },
+);
+
+function toIsoDateString(value: Date | string): string {
+  return (value instanceof Date ? value : new Date(value)).toISOString();
+}
+
+function mapExhibitionRecord(
+  record: ExhibitionRecord,
   locale: SiteLocale,
 ): ExhibitionListItem {
   return {
@@ -75,8 +120,8 @@ function mapExhibitionRecord(
     venue: record.venue,
     city: record.city ?? undefined,
     country: record.country ?? undefined,
-    startDate: record.startDate.toISOString(),
-    endDate: record.endDate ? record.endDate.toISOString() : null,
+    startDate: toIsoDateString(record.startDate),
+    endDate: record.endDate ? toIsoDateString(record.endDate) : null,
     sourceUrl: record.sourceUrl ?? null,
     posterImageUrl: record.posterImageUrl ?? null,
     description:
@@ -116,28 +161,31 @@ export async function listExhibitions(
     return [];
   }
   try {
-    const items = await prisma.exhibition.findMany({
-      where: {
-        ...(publishedOnly ? { isPublished: true } : {}),
-        ...(upcomingOnly ? { startDate: { gte: now } } : {}),
-      },
-      include: {
-        category: true,
-      },
-      orderBy: [
-        { sortOrder: 'asc' },
-        { startDate: upcomingOnly ? 'asc' : 'desc' },
-        { titleRu: 'asc' },
-        { title: 'asc' },
-      ],
-      take: limit,
-    });
+    const items = upcomingOnly
+      ? await prisma.exhibition.findMany({
+          where: {
+            ...(publishedOnly ? { isPublished: true } : {}),
+            startDate: { gte: now },
+          },
+          include: {
+            category: true,
+          },
+          orderBy: [
+            { sortOrder: 'asc' },
+            { startDate: 'asc' },
+            { titleRu: 'asc' },
+            { title: 'asc' },
+          ],
+          take: limit,
+        })
+      : await getCachedExhibitionListRecords(publishedOnly, limit ?? null);
 
     if (items.length > 0) {
       markDatabaseHealthy();
       return items.map((item) => mapExhibitionRecord(item, locale));
     }
-  } catch {
+  } catch (error) {
+    console.error('Failed to load exhibitions.', error);
     markDatabaseUnavailable();
     return [];
   }
@@ -160,18 +208,14 @@ export async function getExhibitionBySlug(
   }
 
   try {
-    const item = await prisma.exhibition.findUnique({
-      where: { slug },
-      include: {
-        category: true,
-      },
-    });
+    const item = await getCachedExhibitionRecordBySlug(slug);
 
     if (item) {
       markDatabaseHealthy();
       return mapExhibitionRecord(item, locale);
     }
-  } catch {
+  } catch (error) {
+    console.error(`Failed to load exhibition by slug: ${slug}.`, error);
     markDatabaseUnavailable();
     return null;
   }

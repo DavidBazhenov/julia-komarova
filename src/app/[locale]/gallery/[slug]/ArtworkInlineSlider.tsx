@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 import styles from "@/app/(public)/gallery/[slug]/artwork.module.css";
+import { shouldBypassImageOptimization } from "@/shared/lib/images";
 
 type ArtworkInlineSliderImage = {
   id: string;
@@ -179,6 +180,7 @@ export function ArtworkInlineSlider({ title, images, labels }: ArtworkInlineSlid
                 fill
                 priority
                 sizes="(min-width: 960px) 58vw, 100vw"
+                unoptimized={shouldBypassImageOptimization(activeImage.displayUrl)}
                 className={styles.heroImage}
               />
             </div>

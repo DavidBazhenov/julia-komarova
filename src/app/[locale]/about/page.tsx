@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
+import aboutPortrait from "../../../../public/images/about.jpg";
+import logoImage from "../../../../public/images/jk-logo.png";
 
 import {
   createLocalizedPageMetadata,
@@ -51,7 +53,7 @@ export default async function AboutPage({
         <header className={styles.hero}>
           <div className={styles.logoBlock}>
             <Image
-              src="/images/jk-logo.png"
+              src={logoImage}
               alt={locale === "ru" ? "Логотип Юлии Комаровой" : "Julia Komarova logo"}
               width={1800}
               height={620}
@@ -64,7 +66,7 @@ export default async function AboutPage({
         <div className={styles.portraitBlock}>
           <div className={styles.portraitFrame}>
             <Image
-              src="/images/about.jpg"
+              src={aboutPortrait}
               alt={locale === "ru" ? "Портрет Юлии Комаровой" : "Portrait of Julia Komarova"}
               fill
               sizes="(max-width: 767px) 78vw, 22rem"

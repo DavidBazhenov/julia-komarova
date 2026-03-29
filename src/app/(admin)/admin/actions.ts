@@ -27,6 +27,10 @@ import {
 } from "@/features";
 import { assertAdminSession } from "@/server/auth";
 import {
+  revalidateArtworkContent,
+  revalidateCategoryContent,
+  revalidateExhibitionCategoryContent,
+  revalidateExhibitionContent,
   revalidatePublicExhibitions,
   revalidatePublicGallery,
   revalidatePublicHome,
@@ -138,6 +142,7 @@ export async function createCategoryAction(formData: FormData): Promise<void> {
 
   revalidatePublicHome();
   revalidatePublicGallery();
+  revalidateCategoryContent();
   redirect("/admin/categories?created=1");
 }
 
@@ -171,6 +176,7 @@ export async function updateCategoryAction(formData: FormData): Promise<void> {
 
   revalidatePublicHome();
   revalidatePublicGallery();
+  revalidateCategoryContent();
   redirect(`${returnTo}?updated=1`);
 }
 
@@ -190,6 +196,7 @@ export async function deleteCategoryAction(formData: FormData): Promise<void> {
 
   revalidatePublicHome();
   revalidatePublicGallery();
+  revalidateCategoryContent();
   redirect("/admin/categories?updated=1");
 }
 
@@ -212,6 +219,8 @@ export async function createExhibitionCategoryAction(formData: FormData): Promis
     redirect(`/admin/exhibition-categories?error=${message}`);
   }
 
+  revalidateExhibitionCategoryContent();
+  revalidateExhibitionContent();
   revalidatePublicExhibitions();
   redirect("/admin/exhibition-categories?created=1");
 }
@@ -244,6 +253,8 @@ export async function updateExhibitionCategoryAction(formData: FormData): Promis
     redirect(`${returnTo}?error=${message}`);
   }
 
+  revalidateExhibitionCategoryContent();
+  revalidateExhibitionContent();
   revalidatePublicExhibitions();
   redirect(`${returnTo}?updated=1`);
 }
@@ -262,6 +273,8 @@ export async function deleteExhibitionCategoryAction(formData: FormData): Promis
     redirect(`${returnTo}?error=${message}`);
   }
 
+  revalidateExhibitionCategoryContent();
+  revalidateExhibitionContent();
   revalidatePublicExhibitions();
   redirect("/admin/exhibition-categories?updated=1");
 }
@@ -300,6 +313,7 @@ export async function createExhibitionAction(formData: FormData): Promise<void> 
     redirect(`/admin/exhibitions?error=${message}`);
   }
 
+  revalidateExhibitionContent();
   revalidatePublicHome();
   revalidatePublicExhibitions();
   redirect("/admin/exhibitions?created=1");
@@ -348,6 +362,7 @@ export async function updateExhibitionAction(formData: FormData): Promise<void> 
     redirect(`${returnTo}?error=${message}`);
   }
 
+  revalidateExhibitionContent();
   revalidatePublicHome();
   revalidatePublicExhibitions();
   redirect(`${returnTo}?updated=1`);
@@ -360,6 +375,7 @@ export async function createArtworkAction(formData: FormData): Promise<void> {
   try {
     const created = await createArtwork(readArtworkMutationInput(formData));
 
+    revalidateArtworkContent();
     revalidatePublicHome();
     revalidatePublicGallery();
     if (created.isPublished) {
@@ -395,6 +411,7 @@ export async function updateArtworkAction(formData: FormData): Promise<void> {
     });
     nextSlug = updated.slug;
 
+    revalidateArtworkContent();
     revalidatePublicHome();
     revalidatePublicGallery();
   } catch (error) {
@@ -448,6 +465,7 @@ export async function uploadArtworkImageAction(formData: FormData): Promise<void
     redirect(`${returnTo}?error=${message}`);
   }
 
+  revalidateArtworkContent();
   revalidatePublicHome();
   revalidatePublicGallery();
   if (slug) {
@@ -473,6 +491,7 @@ export async function setPrimaryArtworkImageAction(formData: FormData): Promise<
     redirect(`${returnTo}?error=${message}`);
   }
 
+  revalidateArtworkContent();
   revalidatePublicHome();
   revalidatePublicGallery();
   if (slug) {
@@ -503,6 +522,7 @@ export async function reorderArtworkImageAction(formData: FormData): Promise<voi
     redirect(`${returnTo}?error=${message}`);
   }
 
+  revalidateArtworkContent();
   revalidatePublicGallery();
   if (slug) {
     revalidatePublicArtwork(slug);
@@ -527,6 +547,7 @@ export async function deleteArtworkImageAction(formData: FormData): Promise<void
     redirect(`${returnTo}?error=${message}`);
   }
 
+  revalidateArtworkContent();
   revalidatePublicHome();
   revalidatePublicGallery();
   if (slug) {

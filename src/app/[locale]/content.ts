@@ -8,7 +8,7 @@ import {
   listRelatedArtworks
 } from "../../features/artworks/service";
 import type {ArtworkDetailItem, ArtworkListItem} from "../../features/artworks/types";
-import {listCategories, listFeaturedCategories} from "../../features/categories/service";
+import {listCategories} from "../../features/categories/service";
 import type {CategoryListItem} from "../../features/categories/types";
 import {listExhibitionCategories} from "../../features/exhibition-categories/service";
 import type {ExhibitionCategoryListItem} from "../../features/exhibition-categories/types";
@@ -60,7 +60,6 @@ export type LocalizedExhibitionCategory = ExhibitionCategoryListItem & {
 
 export type HomePageData = {
   featuredArtworks: LocalizedArtworkListItem[];
-  categories: LocalizedCategory[];
   exhibitions: LocalizedExhibitionItem[];
 };
 
@@ -233,9 +232,8 @@ async function resolveExhibitionLabel(locale: Locale, item: ExhibitionListItem):
 
 export async function loadLocalizedHomeData(locale: Locale): Promise<HomePageData> {
   const tArtwork = await getTranslations({locale, namespace: "Artwork"});
-  const [featuredArtworks, categories, exhibitions] = await Promise.all([
+  const [featuredArtworks, exhibitions] = await Promise.all([
     listFeaturedArtworks(12, locale),
-    listFeaturedCategories(4, locale),
     listExhibitions({limit: 6, publishedOnly: true, locale})
   ]);
 
@@ -247,7 +245,6 @@ export async function loadLocalizedHomeData(locale: Locale): Promise<HomePageDat
 
   return {
     featuredArtworks: featuredArtworks.map((item) => localizeArtworkListItem(tArtwork("fallbackTitle"), item)),
-    categories: categories.map((category) => localizeCategory(category)),
     exhibitions: localizedExhibitions
   };
 }

@@ -1,5 +1,4 @@
 import { getTranslations } from "next-intl/server";
-import { unstable_noStore as noStore } from "next/cache";
 import { notFound } from "next/navigation";
 
 import { Button, Container } from "../../../shared/ui";
@@ -13,7 +12,7 @@ import {
 import { GalleryInfiniteGrid } from "./GalleryInfiniteGrid";
 import styles from "../../(public)/gallery/gallery.module.css";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 export async function generateMetadata({
   params,
@@ -43,8 +42,6 @@ export default async function GalleryPage({
   params: Promise<{ locale: string }>;
   searchParams?: Promise<{ category?: string | string[] }>;
 }) {
-  noStore();
-
   const { locale: rawLocale } = await params;
 
   if (!isLocale(rawLocale)) {

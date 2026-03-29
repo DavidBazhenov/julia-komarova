@@ -1,7 +1,6 @@
 import { Button, Container } from "../../../../shared/ui";
 import { ArtworkCarousel } from "../../../../shared/ui/artwork-carousel";
 import { getTranslations } from "next-intl/server";
-import { unstable_noStore as noStore } from "next/cache";
 import { notFound } from "next/navigation";
 
 import {
@@ -16,7 +15,7 @@ import { listArtworks } from "../../../../features/artworks/service";
 import styles from "../../../(public)/gallery/[slug]/artwork.module.css";
 import { ArtworkInlineSlider } from "./ArtworkInlineSlider";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 export async function generateMetadata({
   params,
@@ -60,8 +59,6 @@ export default async function ArtworkPage({
 }: {
   params: Promise<{ locale: string; slug: string }>;
 }) {
-  noStore();
-
   const { locale: rawLocale, slug } = await params;
 
   if (!isLocale(rawLocale)) {

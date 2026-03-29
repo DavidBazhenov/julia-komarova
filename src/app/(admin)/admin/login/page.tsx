@@ -2,15 +2,14 @@ import { redirect } from "next/navigation";
 
 import { hasAdminSession } from "@/server/auth";
 
-import { loginAdminAction } from "../actions";
 import styles from "../admin.module.css";
 
 type AdminLoginPageProps = {
-  searchParams?: {
+  searchParams?: Promise<{
     error?: string;
     next?: string;
     logged_out?: string;
-  };
+  }>;
 };
 
 export const dynamic = "force-dynamic";
@@ -22,7 +21,8 @@ export default async function AdminLoginPage({
     redirect("/admin");
   }
 
-  const next = searchParams?.next ?? "/admin";
+  const resolvedSearchParams = searchParams ? await searchParams : undefined;
+  const next = resolvedSearchParams?.next ?? "/admin";
 
   return (
     <section className={styles.loginWrap}>
@@ -33,13 +33,13 @@ export default async function AdminLoginPage({
           Sign in with the configured admin credentials. Session cookie is signed on
           the server.
         </p>
-        {searchParams?.logged_out ? (
+        {resolvedSearchParams?.logged_out ? (
           <p className={styles.notice}>Logged out.</p>
         ) : null}
-        {searchParams?.error ? (
+        {resolvedSearchParams?.error ? (
           <p className={styles.error}>Invalid email or password.</p>
         ) : null}
-        <form action={loginAdminAction} className={styles.form}>
+        <form method="post" action="/api/admin/login" className={styles.form}>
           <input type="hidden" name="next" value={next} />
           <div className={styles.field}>
             <label htmlFor="email">Email</label>

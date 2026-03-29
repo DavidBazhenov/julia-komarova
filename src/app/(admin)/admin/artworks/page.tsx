@@ -6,6 +6,7 @@ import type { ArtworkAdminListItem } from "@/features/artworks";
 import { listAdminArtworks } from "@/features/artworks";
 import { listAdminCategories } from "@/features/categories";
 import { readAdminSession } from "@/server/auth";
+import { shouldBypassImageOptimization } from "@/shared/lib/images";
 
 import { createArtworkAction } from "../actions";
 import styles from "../admin.module.css";
@@ -106,6 +107,7 @@ export default async function AdminArtworksPage({
                           alt={artwork.coverImage.alt || title}
                           width={240}
                           height={240}
+                          unoptimized={shouldBypassImageOptimization(artwork.coverImage.thumbnailUrl)}
                           className={styles.artworkAdminThumb}
                         />
                       ) : (

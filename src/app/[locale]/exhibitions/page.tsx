@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { unstable_noStore as noStore } from "next/cache";
 import { notFound } from "next/navigation";
 
 import { Container } from "../../../shared/ui";
@@ -14,7 +13,7 @@ import {
 
 import styles from "../../(public)/exhibitions/exhibitions.module.css";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 function formatYear(date: string): string {
   return String(new Date(date).getUTCFullYear());
@@ -46,8 +45,6 @@ export default async function ExhibitionsPage({
 }: {
   params: Promise<{ locale: string }>;
 }) {
-  noStore();
-
   const { locale: rawLocale } = await params;
 
   if (!isLocale(rawLocale)) {

@@ -2,7 +2,6 @@ import { PrismaClient } from '@prisma/client/index';
 
 const globalForPrisma = globalThis as unknown as {
   prisma?: PrismaClient;
-  databaseBypassUntil?: number;
 };
 
 function isBuildProcess(): boolean {
@@ -14,15 +13,16 @@ export function shouldBypassDatabase(): boolean {
     return true;
   }
 
-  return Boolean(globalForPrisma.databaseBypassUntil && globalForPrisma.databaseBypassUntil > Date.now());
+  return false;
 }
 
-export function markDatabaseUnavailable(cooldownMs = 30_000): void {
-  globalForPrisma.databaseBypassUntil = Date.now() + cooldownMs;
+export function markDatabaseUnavailable(): void {
+  // Intentionally a no-op in runtime. A transient read error should not suppress
+  // unrelated follow-up requests for the next 30 seconds.
 }
 
 export function markDatabaseHealthy(): void {
-  globalForPrisma.databaseBypassUntil = undefined;
+  // No-op for compatibility with existing call sites.
 }
 
 export const prisma =

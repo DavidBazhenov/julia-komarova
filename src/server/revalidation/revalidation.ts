@@ -1,4 +1,5 @@
 import { revalidatePath, revalidateTag } from 'next/cache';
+import { contentTags } from './tags';
 
 export function revalidatePublicArtwork(slug: string): void {
   revalidatePath(`/gallery/${slug}`);
@@ -26,4 +27,20 @@ export function revalidatePublicExhibitions(): void {
 
 export function revalidateContentTag(tag: string): void {
   revalidateTag(tag);
+}
+
+export function revalidateArtworkContent(): void {
+  revalidateTag(contentTags.artworks);
+}
+
+export function revalidateCategoryContent(): void {
+  revalidateTag(contentTags.categories);
+}
+
+export function revalidateExhibitionContent(): void {
+  revalidateTag(contentTags.exhibitions);
+}
+
+export function revalidateExhibitionCategoryContent(): void {
+  revalidateTag(contentTags.exhibitionCategories);
 }

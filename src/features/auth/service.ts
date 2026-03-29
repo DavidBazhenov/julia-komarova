@@ -1,9 +1,7 @@
-import { prisma } from "../../server/db";
 import {
-  getFallbackAdminEmail,
-  getFallbackAdminPasswordHash,
+  getAdminEmail,
+  getAdminPassword,
 } from "../../server/auth/config";
-import { verifyPassword } from "../../server/auth/password";
 import {
   clearAdminSessionCookie,
   setAdminSessionCookie,
@@ -17,37 +15,24 @@ function normalizeEmail(email: string): string {
 type ResolvedAdminRecord = {
   id: string;
   email: string;
-  passwordHash: string;
+  password: string;
   isActive: boolean;
 };
 
-async function resolveAdminRecord(email: string): Promise<ResolvedAdminRecord | null> {
+function resolveAdminRecord(email: string): ResolvedAdminRecord | null {
   const normalizedEmail = normalizeEmail(email);
-  const dbUser = await prisma.adminUser.findUnique({
-    where: { email: normalizedEmail },
-  });
-
-  if (dbUser) {
-    return {
-      id: dbUser.id,
-      email: dbUser.email,
-      passwordHash: dbUser.passwordHash,
-      isActive: dbUser.isActive,
-    };
-  }
-
-  const fallbackEmail = getFallbackAdminEmail();
-  const fallbackPasswordHash = getFallbackAdminPasswordHash();
+  const fallbackEmail = getAdminEmail();
+  const fallbackPassword = getAdminPassword();
 
   if (
     fallbackEmail &&
-    fallbackPasswordHash &&
+    fallbackPassword &&
     fallbackEmail === normalizedEmail
   ) {
     return {
       id: "env-admin",
       email: fallbackEmail,
-      passwordHash: fallbackPasswordHash,
+      password: fallbackPassword,
       isActive: true,
     };
   }
@@ -58,13 +43,13 @@ async function resolveAdminRecord(email: string): Promise<ResolvedAdminRecord | 
 export async function loginAdmin(credentials: AdminCredentials): Promise<AdminSession> {
   const email = normalizeEmail(credentials.email);
   const password = credentials.password;
-  const adminUser = await resolveAdminRecord(email);
+  const adminUser = resolveAdminRecord(email);
 
   if (!adminUser || !adminUser.isActive) {
     throw new Error("Invalid admin credentials");
   }
 
-  const isValidPassword = verifyPassword(password, adminUser.passwordHash);
+  const isValidPassword = password === adminUser.password;
   if (!isValidPassword) {
     throw new Error("Invalid admin credentials");
   }
@@ -76,13 +61,6 @@ export async function loginAdmin(credentials: AdminCredentials): Promise<AdminSe
   };
 
   await setAdminSessionCookie(session);
-
-  if (adminUser.id !== "env-admin") {
-    await prisma.adminUser.update({
-      where: { id: adminUser.id },
-      data: { lastLoginAt: new Date() },
-    });
-  }
 
   return session;
 }

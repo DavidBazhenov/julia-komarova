@@ -3,6 +3,8 @@ import { getTranslations } from "next-intl/server";
 import { unstable_noStore as noStore } from "next/cache";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import aboutPhoto from "../../../public/images/about-photo.jpg";
+import heroImage from "../../../public/images/hero-home-direct.webp";
 
 import { Button, Container, NewsCarousel, Section } from "../../shared/ui";
 import { ArtworkCarousel } from "../../shared/ui/artwork-carousel";
@@ -59,12 +61,9 @@ export default async function HomePage({
   ]);
   const data = await loadLocalizedHomeData(locale);
 
-  if (data.featuredArtworks.length === 0 && data.exhibitions.length === 0) {
+  if (data.featuredArtworks.length === 0 || data.exhibitions.length === 0) {
     noStore();
   }
-
-  const heroImageSrc = "/images/hero-home-direct.webp";
-  const homeAboutImageSrc = "/images/about-photo.jpg?v=20260326";
   const heroImageAlt =
     data.featuredArtworks[0]?.coverImage?.alt ||
     data.featuredArtworks[0]?.title ||
@@ -97,11 +96,10 @@ export default async function HomePage({
           <div className={styles.heroFrame}>
             <div className={styles.heroImage}>
               <Image
-                src={heroImageSrc}
+                src={heroImage}
                 alt={heroImageAlt}
                 fill
                 priority
-                unoptimized
                 className={styles.heroPainting}
               />
               <div className={styles.heroOverlay}>
@@ -131,7 +129,7 @@ export default async function HomePage({
             <div className={styles.aboutPhotoBlock}>
               <div className={styles.aboutPhotoFrame}>
                 <Image
-                  src={homeAboutImageSrc}
+                  src={aboutPhoto}
                   alt={locale === "ru" ? "Портрет Юлии Комаровой" : "Portrait of Julia Komarova"}
                   width={736}
                   height={919}

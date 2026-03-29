@@ -1,5 +1,7 @@
+import { unstable_cache } from 'next/cache';
 import { prisma } from '@/server/db';
 import { markDatabaseHealthy, markDatabaseUnavailable, shouldBypassDatabase } from '@/server/db/prisma';
+import { CONTENT_CACHE_REVALIDATE_SECONDS, contentTags } from '@/server/revalidation/tags';
 import { defaultLocale, pickLocalizedValue, type SiteLocale } from '@/shared/lib/i18n';
 
 import type { ExhibitionCategoryListItem } from './types';
@@ -10,19 +12,47 @@ export type ListExhibitionCategoriesInput = {
   locale?: SiteLocale;
 };
 
-function mapExhibitionCategoryRecord(
-  record: {
-    id: string;
-    slug: string;
-    title: string;
-    titleRu?: string | null;
-    titleEn?: string | null;
-    description: string | null;
-    descriptionRu?: string | null;
-    descriptionEn?: string | null;
-    sortOrder: number;
-    isVisible: boolean;
+type ExhibitionCategoryRecord = {
+  id: string;
+  slug: string;
+  title: string;
+  titleRu?: string | null;
+  titleEn?: string | null;
+  description: string | null;
+  descriptionRu?: string | null;
+  descriptionEn?: string | null;
+  sortOrder: number;
+  isVisible: boolean;
+};
+
+const getCachedExhibitionCategoryListRecords = unstable_cache(
+  async (visibleOnly: boolean, limit: number | null): Promise<ExhibitionCategoryRecord[]> =>
+    prisma.exhibitionCategory.findMany({
+      where: visibleOnly ? { isVisible: true } : undefined,
+      orderBy: [{ sortOrder: 'asc' }, { titleRu: 'asc' }, { title: 'asc' }],
+      take: limit ?? undefined,
+    }),
+  ['public-exhibition-category-list-records'],
+  {
+    tags: [contentTags.exhibitionCategories],
+    revalidate: CONTENT_CACHE_REVALIDATE_SECONDS,
   },
+);
+
+const getCachedExhibitionCategoryRecordBySlug = unstable_cache(
+  async (slug: string): Promise<ExhibitionCategoryRecord | null> =>
+    prisma.exhibitionCategory.findUnique({
+      where: { slug },
+    }),
+  ['public-exhibition-category-record-by-slug'],
+  {
+    tags: [contentTags.exhibitionCategories],
+    revalidate: CONTENT_CACHE_REVALIDATE_SECONDS,
+  },
+);
+
+function mapExhibitionCategoryRecord(
+  record: ExhibitionCategoryRecord,
   locale: SiteLocale,
 ): ExhibitionCategoryListItem {
   return {
@@ -58,17 +88,14 @@ export async function listExhibitionCategories(
   }
 
   try {
-    const items = await prisma.exhibitionCategory.findMany({
-      where: visibleOnly ? { isVisible: true } : undefined,
-      orderBy: [{ sortOrder: 'asc' }, { titleRu: 'asc' }, { title: 'asc' }],
-      take: limit,
-    });
+    const items = await getCachedExhibitionCategoryListRecords(visibleOnly, limit ?? null);
 
     if (items.length > 0) {
       markDatabaseHealthy();
       return items.map((item) => mapExhibitionCategoryRecord(item, locale));
     }
-  } catch {
+  } catch (error) {
+    console.error('Failed to load exhibition categories.', error);
     markDatabaseUnavailable();
     return [];
   }
@@ -85,15 +112,14 @@ export async function getExhibitionCategoryBySlug(
   }
 
   try {
-    const item = await prisma.exhibitionCategory.findUnique({
-      where: { slug },
-    });
+    const item = await getCachedExhibitionCategoryRecordBySlug(slug);
 
     if (item) {
       markDatabaseHealthy();
       return mapExhibitionCategoryRecord(item, locale);
     }
-  } catch {
+  } catch (error) {
+    console.error(`Failed to load exhibition category by slug: ${slug}.`, error);
     markDatabaseUnavailable();
     return null;
   }

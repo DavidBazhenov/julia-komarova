@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 import type { ArtworkAdminListItem } from "@/features/artworks";
+import { shouldBypassImageOptimization } from "@/shared/lib/images";
 
 import {
   deleteArtworkImageAction,
@@ -29,6 +30,7 @@ export function ArtworkMediaManager({ artwork, returnTo }: ArtworkMediaManagerPr
                 className={styles.thumbImage}
                 width={88}
                 height={88}
+                unoptimized={shouldBypassImageOptimization(image.thumbnailUrl)}
               />
               <span className={styles.helper}>
                 {image.isPrimary ? "Primary" : "Gallery"}
