@@ -34,8 +34,10 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/prisma ./prisma
+COPY docker/web-entrypoint.sh /usr/local/bin/web-entrypoint.sh
 RUN mkdir -p /app/.next/cache && chown -R nextjs:nodejs /app
+RUN chmod +x /usr/local/bin/web-entrypoint.sh
 
-USER nextjs
 EXPOSE 3000
+ENTRYPOINT ["/usr/local/bin/web-entrypoint.sh"]
 CMD ["node", "server.js"]

@@ -48,6 +48,22 @@ export default async function AdminDashboardPage() {
     return `${value.toFixed(value >= 10 || exponent === 0 ? 0 : 1)} ${units[exponent]}`;
   }
 
+  function renderStorageMeta(): string | null {
+    if (!storage) {
+      return null;
+    }
+
+    if (storage.source === "quota") {
+      return `Uploads use ${formatBytes(storage.uploadsBytes)} in ${storage.rootPath}. ${storage.freePercent.toFixed(
+        1,
+      )}% of the upload quota is still free.`;
+    }
+
+    return `Uploads use ${formatBytes(storage.uploadsBytes)} in ${storage.rootPath}. The host volume currently has ${formatBytes(
+      storage.usedBytes,
+    )} used and ${formatBytes(storage.freeBytes)} free.`;
+  }
+
   return (
     <>
       <section className={styles.summaryGrid}>
@@ -105,8 +121,7 @@ export default async function AdminDashboardPage() {
                 />
               </div>
               <p className={styles.storageMeta}>
-                Uploads use {formatBytes(storage.uploadsBytes)}. {storage.freePercent.toFixed(1)}%
-                {storage.source === "quota" ? " of the quota is still free." : " of the volume is still free."}
+                {renderStorageMeta()}
               </p>
             </>
           ) : null}

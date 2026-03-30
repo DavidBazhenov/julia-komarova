@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { promisify } from 'node:util';
 import sharp from 'sharp';
+import { getOptionalEnv } from '@/server/config/env';
 
 export type ArtworkImageVariant = 'original' | 'display' | 'thumbnail';
 export type StoredArtworkImage = {
@@ -14,7 +15,10 @@ export type StoredArtworkImage = {
   height: number | null;
 };
 
-const STORAGE_ROOT = path.join(process.cwd(), 'storage');
+const STORAGE_ROOT = path.resolve(
+  process.cwd(),
+  getOptionalEnv('UPLOAD_DIR', 'storage').trim() || 'storage',
+);
 const execFile = promisify(execFileCallback);
 const RAW_EXTENSIONS = new Set(['.cr3', '.cr2', '.nef', '.arw', '.dng', '.raf', '.orf', '.rw2']);
 const RAW_MIME_TYPES = new Set([
