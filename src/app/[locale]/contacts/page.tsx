@@ -72,6 +72,29 @@ export default async function ContactsPage({
           <h1 className={styles.title}>{tContacts("title")}</h1>
         </div>
 
+        <div className={styles.grid}>
+          <article className={styles.card}>
+            <h2>WhatsApp</h2>
+            <p>
+              <a href="https://wa.me/79850665300" target="_blank" rel="noreferrer">
+                +7 985 066 5300
+              </a>
+            </p>
+          </article>
+          <article className={styles.card}>
+            <h2>Instagram</h2>
+            <p>
+              <a
+                href="https://www.instagram.com/jul19nk?igsh=MTZkbnNuMDFmY2xhaA=="
+                target="_blank"
+                rel="noreferrer"
+              >
+                @jul19nk
+              </a>
+            </p>
+          </article>
+        </div>
+
         <div className={styles.card}>
           <ContactsForm
             locale={locale}

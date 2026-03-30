@@ -141,14 +141,21 @@ export default async function LocaleLayout({
                   <a className={styles.footerLink} href="mailto:hello@juliakomarova.art">
                     hello@juliakomarova.art
                   </a>
-                  <a className={styles.footerLink} href="https://instagram.com/juliakomarova.art" target="_blank" rel="noreferrer">
+                  <a
+                    className={styles.footerLink}
+                    href="https://wa.me/79850665300"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    WhatsApp: +7 985 066 5300
+                  </a>
+                  <a
+                    className={styles.footerLink}
+                    href="https://www.instagram.com/jul19nk?igsh=MTZkbnNuMDFmY2xhaA=="
+                    target="_blank"
+                    rel="noreferrer"
+                  >
                     Instagram
-                  </a>
-                  <a className={styles.footerLink} href="https://vk.com/juliakomarova" target="_blank" rel="noreferrer">
-                    VK
-                  </a>
-                  <a className={styles.footerLink} href="https://t.me/julia_komarova_studio" target="_blank" rel="noreferrer">
-                    Telegram
                   </a>
                 </div>
               </div>
