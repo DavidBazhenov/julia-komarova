@@ -8,16 +8,16 @@ COPY prisma ./prisma
 RUN npm install
 
 FROM base AS builder
+ARG NEXT_PUBLIC_SITE_URL=https://julia-komarova.ru
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV DATABASE_URL=mongodb://127.0.0.1:27017/julia_komarova_build
 ENV AUTH_SECRET=build-secret
 ENV ADMIN_EMAIL=admin@example.com
-ENV ADMIN_PASSWORD_HASH=build-password-hash
+ENV ADMIN_PASSWORD=build-password
 ENV TELEGRAM_BOT_TOKEN=build-telegram-token
 ENV TELEGRAM_CHAT_ID=build-telegram-chat
-ENV NEXT_PUBLIC_SITE_URL=http://localhost:3000
+ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
 ENV REVALIDATE_SECRET=build-revalidate-secret
-ENV SKIP_DATABASE_DURING_BUILD=1
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN npx prisma generate

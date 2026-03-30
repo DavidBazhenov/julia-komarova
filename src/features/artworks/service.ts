@@ -95,7 +95,7 @@ const getCachedArtworkListRecords = unstable_cache(
 
 const getCachedArtworkRecordBySlug = unstable_cache(
   async (slug: string): Promise<ArtworkDetailRecord | null> =>
-    prisma.artwork.findUnique({
+    prisma.artwork.findFirst({
       where: { slug },
       include: {
         images: {
@@ -313,7 +313,7 @@ export async function getArtworkBySlug(
   } catch (error) {
     console.error(`Failed to load artwork by slug: ${slug}.`, error);
     markDatabaseUnavailable();
-    return null;
+    throw error;
   }
   return null;
 }

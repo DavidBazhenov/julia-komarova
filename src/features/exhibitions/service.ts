@@ -71,7 +71,7 @@ const getCachedExhibitionListRecords = unstable_cache(
 
 const getCachedExhibitionRecordBySlug = unstable_cache(
   async (slug: string): Promise<ExhibitionRecord | null> =>
-    prisma.exhibition.findUnique({
+    prisma.exhibition.findFirst({
       where: { slug },
       include: {
         category: true,
@@ -217,7 +217,7 @@ export async function getExhibitionBySlug(
   } catch (error) {
     console.error(`Failed to load exhibition by slug: ${slug}.`, error);
     markDatabaseUnavailable();
-    return null;
+    throw error;
   }
   return null;
 }

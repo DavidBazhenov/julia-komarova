@@ -5,17 +5,16 @@ import { notFound } from "next/navigation";
 
 import {
   createLocalizedPageMetadata,
-  getStaticLocaleParams,
   isLocale,
   loadLocalizedArtworkData,
   type Locale,
 } from "@/app/[locale]/content";
 import { buildArtworkStructuredData } from "@/shared/lib/structured-data";
-import { listArtworks } from "../../../../features/artworks/service";
 import styles from "../../../(public)/gallery/[slug]/artwork.module.css";
 import { ArtworkInlineSlider } from "./ArtworkInlineSlider";
 
 export const revalidate = 300;
+export const dynamicParams = true;
 
 export async function generateMetadata({
   params,
@@ -41,17 +40,6 @@ export async function generateMetadata({
     description: data?.artwork.description ?? tGallery("description"),
     image: data?.artwork.coverImage?.displayUrl ?? "/og.jpg",
   });
-}
-
-export async function generateStaticParams() {
-  const artworks = await listArtworks({ publishedOnly: true, limit: 100 });
-
-  return getStaticLocaleParams().flatMap(({ locale }) =>
-    artworks.map((artwork) => ({
-      locale,
-      slug: artwork.slug,
-    })),
-  );
 }
 
 export default async function ArtworkPage({
