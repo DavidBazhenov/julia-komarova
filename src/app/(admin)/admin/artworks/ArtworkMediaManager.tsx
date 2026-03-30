@@ -18,23 +18,33 @@ type ArtworkMediaManagerProps = {
 };
 
 export function ArtworkMediaManager({ artwork, returnTo }: ArtworkMediaManagerProps) {
+  const hasMultipleImages = artwork.images.length > 1;
+
   return (
     <div className={styles.mediaCell}>
       {artwork.images.length > 0 ? (
         <div className={styles.imageStrip}>
           {artwork.images.map((image) => (
             <div key={image.id} className={styles.thumbCard}>
-              <Image
-                src={image.thumbnailUrl}
-                alt={image.alt || artwork.title}
-                className={styles.thumbImage}
-                width={88}
-                height={88}
-                unoptimized={shouldBypassImageOptimization(image.thumbnailUrl)}
-              />
-              <span className={styles.helper}>
-                {image.isPrimary ? "Primary" : "Gallery"}
-              </span>
+              <div className={styles.thumbImageWrap}>
+                <Image
+                  src={image.thumbnailUrl}
+                  alt={image.alt || artwork.title}
+                  className={styles.thumbImage}
+                  width={176}
+                  height={176}
+                  unoptimized={shouldBypassImageOptimization(image.thumbnailUrl)}
+                />
+                <form action={deleteArtworkImageAction} className={styles.thumbDeleteForm}>
+                  <input type="hidden" name="artworkId" value={artwork.id} />
+                  <input type="hidden" name="imageId" value={image.id} />
+                  <input type="hidden" name="slug" value={artwork.slug} />
+                  {returnTo ? <input type="hidden" name="returnTo" value={returnTo} /> : null}
+                  <button className={styles.thumbDeleteButton} type="submit" aria-label="Remove image">
+                    <span aria-hidden="true">🗑</span>
+                  </button>
+                </form>
+              </div>
               <div className={styles.thumbActions}>
                 {!image.isPrimary ? (
                   <form action={setPrimaryArtworkImageAction}>
@@ -47,35 +57,30 @@ export function ArtworkMediaManager({ artwork, returnTo }: ArtworkMediaManagerPr
                     </button>
                   </form>
                 ) : null}
-                <form action={reorderArtworkImageAction}>
-                  <input type="hidden" name="artworkId" value={artwork.id} />
-                  <input type="hidden" name="imageId" value={image.id} />
-                  <input type="hidden" name="slug" value={artwork.slug} />
-                  <input type="hidden" name="direction" value="left" />
-                  {returnTo ? <input type="hidden" name="returnTo" value={returnTo} /> : null}
-                  <button className={styles.miniButton} type="submit">
-                    Move earlier
-                  </button>
-                </form>
-                <form action={reorderArtworkImageAction}>
-                  <input type="hidden" name="artworkId" value={artwork.id} />
-                  <input type="hidden" name="imageId" value={image.id} />
-                  <input type="hidden" name="slug" value={artwork.slug} />
-                  <input type="hidden" name="direction" value="right" />
-                  {returnTo ? <input type="hidden" name="returnTo" value={returnTo} /> : null}
-                  <button className={styles.miniButton} type="submit">
-                    Move later
-                  </button>
-                </form>
-                <form action={deleteArtworkImageAction}>
-                  <input type="hidden" name="artworkId" value={artwork.id} />
-                  <input type="hidden" name="imageId" value={image.id} />
-                  <input type="hidden" name="slug" value={artwork.slug} />
-                  {returnTo ? <input type="hidden" name="returnTo" value={returnTo} /> : null}
-                  <button className={styles.dangerButton} type="submit">
-                    Remove image
-                  </button>
-                </form>
+                {hasMultipleImages ? (
+                  <>
+                    <form action={reorderArtworkImageAction}>
+                      <input type="hidden" name="artworkId" value={artwork.id} />
+                      <input type="hidden" name="imageId" value={image.id} />
+                      <input type="hidden" name="slug" value={artwork.slug} />
+                      <input type="hidden" name="direction" value="left" />
+                      {returnTo ? <input type="hidden" name="returnTo" value={returnTo} /> : null}
+                      <button className={styles.iconButton} type="submit" aria-label="Move earlier">
+                        <span aria-hidden="true">‹</span>
+                      </button>
+                    </form>
+                    <form action={reorderArtworkImageAction}>
+                      <input type="hidden" name="artworkId" value={artwork.id} />
+                      <input type="hidden" name="imageId" value={image.id} />
+                      <input type="hidden" name="slug" value={artwork.slug} />
+                      <input type="hidden" name="direction" value="right" />
+                      {returnTo ? <input type="hidden" name="returnTo" value={returnTo} /> : null}
+                      <button className={styles.iconButton} type="submit" aria-label="Move later">
+                        <span aria-hidden="true">›</span>
+                      </button>
+                    </form>
+                  </>
+                ) : null}
               </div>
             </div>
           ))}
@@ -94,7 +99,7 @@ export function ArtworkMediaManager({ artwork, returnTo }: ArtworkMediaManagerPr
             id={`image-${artwork.id}`}
             name="image"
             type="file"
-            accept="image/*,.cr3,.cr2,.nef,.arw,.dng,.raf,.orf,.rw2"
+            accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
             required
           />
         </div>
@@ -103,7 +108,7 @@ export function ArtworkMediaManager({ artwork, returnTo }: ArtworkMediaManagerPr
           <input id={`alt-${artwork.id}`} name="alt" />
         </div>
         <p className={styles.fieldHint}>
-          JPEG, PNG, WebP and RAW files including CR3 are supported. Upload size limit is 25 MB.
+          Supported formats: JPG, PNG, WebP. Upload size limit is 25 MB.
         </p>
         <label className={styles.checkbox}>
           <input name="markAsPrimary" type="checkbox" />

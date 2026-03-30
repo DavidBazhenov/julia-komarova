@@ -66,6 +66,7 @@ export function ArtworkCarousel({ items, locale, variant }: ArtworkCarouselProps
               title={item.title}
               eyebrow={item.series}
               subtitle={`${item.series}${item.year ? ` · ${item.year}` : ""}`}
+              price={item.price ?? undefined}
               imageUrl={
                 item.coverImage
                   ? variant === "home"

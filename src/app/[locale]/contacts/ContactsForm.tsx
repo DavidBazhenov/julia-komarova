@@ -2,8 +2,6 @@
 
 import { useState } from "react";
 
-import { Button } from "../../../shared/ui";
-
 import styles from "../../(public)/contacts/contacts.module.css";
 
 type ContactsFormCopy = {
@@ -15,7 +13,6 @@ type ContactsFormCopy = {
   contact: string;
   contactPlaceholder: string;
   message: string;
-  askButton: string;
 };
 
 type ContactsFormProps = {
@@ -244,9 +241,6 @@ export function ContactsForm({
         <button className={styles.submitButton} type="submit" disabled={status === "loading"}>
           {status === "loading" ? `${copy.submit}...` : copy.submit}
         </button>
-        <Button href={`/${locale}/gallery`} variant="secondary">
-          {copy.askButton}
-        </Button>
       </div>
     </form>
   );

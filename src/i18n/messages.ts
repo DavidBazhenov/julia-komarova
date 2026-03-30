@@ -10,6 +10,7 @@ export const messages = {
     },
     Home: {
       eyebrow: "Artist | Interior painting",
+      heroName: "Julia Komarova",
       title: "Paintings that become part of a space and set its mood.",
       lead: "Julia Komarova creates works for interiors, author series, and commissioned projects where color, composition, and atmosphere are considered as part of the space.",
       aboutEyebrow: "About the artist",
@@ -62,6 +63,7 @@ export const messages = {
         year: "Year",
         technique: "Technique",
         size: "Size",
+        price: "Price",
         status: "Status"
       }
     },
@@ -117,6 +119,7 @@ export const messages = {
       eyebrow: "Contacts",
       title: "For inquiries, commissions, and studio visits.",
       lead: "Use the contact form for collector questions, exhibition invitations, and direct studio requests.",
+      phoneLabel: "Phone",
       emailLabel: "Email",
       note: "Messages from this form are stored in the admin inbox.",
       form: {
@@ -170,6 +173,7 @@ export const messages = {
     },
     Home: {
       eyebrow: "Художник | Интерьерная живопись",
+      heroName: "Юлия Комарова",
       title: "Создаю картины, которые становятся частью пространства и задают его настроение.",
       lead: "Юлия Комарова создает работы для интерьеров, авторские серии и картины на заказ, где цвет, композиция и общее ощущение продумываются как часть пространства.",
       aboutEyebrow: "О художнике",
@@ -222,6 +226,7 @@ export const messages = {
         year: "Год",
         technique: "Техника",
         size: "Размер",
+        price: "Цена",
         status: "Статус"
       }
     },
@@ -277,6 +282,7 @@ export const messages = {
       eyebrow: "Контакты",
       title: "Для запросов, заказов и посещения студии.",
       lead: "Используйте форму для вопросов коллекционеров, приглашений на выставки и прямых запросов в студию.",
+      phoneLabel: "Телефон",
       emailLabel: "Email",
       note: "Сообщения из формы попадают во входящие админки.",
       form: {

@@ -59,10 +59,7 @@ export default async function ContactsPage({
   const contextualMessage = artworkTitle
     ? `Интересует работа «${artworkTitle}».\n\n`
     : "";
-  const [tContacts, tGallery] = await Promise.all([
-    getTranslations({ locale, namespace: "Contacts" }),
-    getTranslations({ locale, namespace: "Gallery" }),
-  ]);
+  const tContacts = await getTranslations({ locale, namespace: "Contacts" });
 
   return (
     <Container>
@@ -74,11 +71,17 @@ export default async function ContactsPage({
 
         <div className={styles.grid}>
           <article className={styles.card}>
-            <h2>WhatsApp</h2>
+            <h2>Telegram</h2>
             <p>
-              <a href="https://wa.me/79850665300" target="_blank" rel="noreferrer">
-                +7 985 066 5300
+              <a href="https://t.me/jk_JuliaKomarova" target="_blank" rel="noreferrer">
+                @jk_JuliaKomarova
               </a>
+            </p>
+          </article>
+          <article className={styles.card}>
+            <h2>{tContacts("phoneLabel")}</h2>
+            <p>
+              <a href="tel:+79850665300">+7 985 066 5300</a>
             </p>
           </article>
           <article className={styles.card}>
@@ -109,7 +112,6 @@ export default async function ContactsPage({
               contact: tContacts("form.contact"),
               contactPlaceholder: tContacts("form.contactPlaceholder"),
               message: tContacts("form.message"),
-              askButton: tGallery("askButton"),
             }}
           />
         </div>

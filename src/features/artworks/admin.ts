@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+import path from 'node:path';
 
 import { prisma } from '@/server/db';
 import { removeArtworkImageDir, storeArtworkImageVariants } from '@/server/storage';
@@ -25,6 +26,9 @@ type ArtworkImageRecord = {
   height: number | null;
 };
 
+const SUPPORTED_ARTWORK_IMAGE_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp']);
+const SUPPORTED_ARTWORK_IMAGE_MIME_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
+
 function getVariantUrl(storageKey: string, variant: 'display' | 'thumbnail'): string {
   return `/media/${storageKey}/${variant}.webp`;
 }
@@ -35,6 +39,8 @@ export type ArtworkAdminListItem = ArtworkListItem & {
   descriptionRu?: string | null;
   descriptionEn?: string | null;
   medium: string | null;
+  mediumRu?: string | null;
+  mediumEn?: string | null;
   dimensions: string | null;
   widthCm: number | null;
   heightCm: number | null;
@@ -42,7 +48,6 @@ export type ArtworkAdminListItem = ArtworkListItem & {
   isFeatured: boolean;
   isPublished: boolean;
   sortOrder: number;
-  priceOnRequest: boolean;
   seoTitle: string | null;
   seoDescription: string | null;
   seoTitleRu?: string | null;
@@ -154,7 +159,9 @@ function buildArtworkSharedData(data: ArtworkAdminCreateInput | ArtworkAdminUpda
     descriptionRu: data.descriptionRu,
     descriptionEn: data.descriptionEn,
     year: data.year ?? null,
-    medium: data.medium,
+    medium: data.mediumRu ?? data.mediumEn,
+    mediumRu: data.mediumRu,
+    mediumEn: data.mediumEn,
     dimensions: data.dimensions,
     widthCm: data.widthCm ?? null,
     heightCm: data.heightCm ?? null,
@@ -163,7 +170,7 @@ function buildArtworkSharedData(data: ArtworkAdminCreateInput | ArtworkAdminUpda
     isFeatured: data.isFeatured,
     isPublished: data.isPublished,
     sortOrder: data.sortOrder,
-    priceOnRequest: data.priceOnRequest,
+    price: data.price,
     seoTitle: data.seoTitleRu ?? data.seoTitleEn,
     seoTitleRu: data.seoTitleRu,
     seoTitleEn: data.seoTitleEn,
@@ -209,6 +216,8 @@ function mapArtwork(record: {
   descriptionRu?: string | null;
   descriptionEn?: string | null;
   medium: string | null;
+  mediumRu?: string | null;
+  mediumEn?: string | null;
   dimensions: string | null;
   widthCm: number | null;
   heightCm: number | null;
@@ -216,7 +225,7 @@ function mapArtwork(record: {
   isFeatured: boolean;
   isPublished: boolean;
   sortOrder: number;
-  priceOnRequest: boolean;
+  price: string | null;
   seoTitle: string | null;
   seoDescription: string | null;
   seoTitleRu?: string | null;
@@ -257,6 +266,8 @@ function mapArtwork(record: {
     descriptionRu: record.descriptionRu ?? record.description ?? undefined,
     descriptionEn: record.descriptionEn ?? record.description ?? undefined,
     medium: record.medium,
+    mediumRu: record.mediumRu ?? record.medium ?? undefined,
+    mediumEn: record.mediumEn ?? record.medium ?? undefined,
     dimensions: record.dimensions,
     widthCm: record.widthCm,
     heightCm: record.heightCm,
@@ -264,7 +275,7 @@ function mapArtwork(record: {
     isFeatured: record.isFeatured,
     isPublished: record.isPublished,
     sortOrder: record.sortOrder,
-    priceOnRequest: record.priceOnRequest,
+    price: record.price,
     seoTitle: record.seoTitle,
     seoDescription: record.seoDescription,
     coverImageId: record.coverImageId,
@@ -528,8 +539,14 @@ export async function uploadArtworkImage(input: {
     throw new Error(`Artwork does not exist: ${input.artworkId}`);
   }
 
-  if (!input.mimeType.startsWith('image/')) {
-    throw new Error('Only image uploads are supported.');
+  const normalizedMimeType = input.mimeType.toLowerCase();
+  const normalizedExtension = path.extname(input.fileName?.toLowerCase() ?? '');
+  const isSupportedMimeType = SUPPORTED_ARTWORK_IMAGE_MIME_TYPES.has(normalizedMimeType);
+  const isSupportedExtension =
+    !normalizedMimeType && SUPPORTED_ARTWORK_IMAGE_EXTENSIONS.has(normalizedExtension);
+
+  if (!isSupportedMimeType && !isSupportedExtension) {
+    throw new Error('Only JPG, PNG, and WebP files are supported.');
   }
 
   const storageImageId = randomUUID();

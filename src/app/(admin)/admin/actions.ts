@@ -1,5 +1,6 @@
 "use server";
 
+import path from "node:path";
 import { redirect } from "next/navigation";
 
 import {
@@ -37,6 +38,9 @@ import {
   revalidatePublicArtwork,
 } from "@/server/revalidation";
 
+const SUPPORTED_ARTWORK_IMAGE_EXTENSIONS = new Set([".jpg", ".jpeg", ".png", ".webp"]);
+const SUPPORTED_ARTWORK_IMAGE_MIME_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
+
 function getString(formData: FormData, key: string): string {
   const value = formData.get(key);
   return typeof value === "string" ? value.trim() : "";
@@ -70,6 +74,21 @@ function getReturnTo(formData: FormData, fallback: string): string {
   return value.startsWith("/") ? value : fallback;
 }
 
+function isSupportedArtworkImageUpload(file: File): boolean {
+  const normalizedMimeType = file.type.toLowerCase();
+  const normalizedExtension = path.extname(file.name.toLowerCase());
+
+  if (SUPPORTED_ARTWORK_IMAGE_MIME_TYPES.has(normalizedMimeType)) {
+    return true;
+  }
+
+  if (!normalizedMimeType && SUPPORTED_ARTWORK_IMAGE_EXTENSIONS.has(normalizedExtension)) {
+    return true;
+  }
+
+  return false;
+}
+
 function readArtworkMutationInput(formData: FormData) {
   return {
     slug: getString(formData, "slug"),
@@ -78,7 +97,8 @@ function readArtworkMutationInput(formData: FormData) {
     descriptionRu: getOptionalString(formData, "descriptionRu"),
     descriptionEn: getOptionalString(formData, "descriptionEn"),
     year: getNumber(formData, "year"),
-    medium: getOptionalString(formData, "medium"),
+    mediumRu: getOptionalString(formData, "mediumRu"),
+    mediumEn: getOptionalString(formData, "mediumEn"),
     dimensions: getOptionalString(formData, "dimensions"),
     widthCm: getNumber(formData, "widthCm"),
     heightCm: getNumber(formData, "heightCm"),
@@ -91,7 +111,7 @@ function readArtworkMutationInput(formData: FormData) {
     isFeatured: getBoolean(formData, "isFeatured"),
     isPublished: getBoolean(formData, "isPublished"),
     sortOrder: getNumber(formData, "sortOrder") ?? 0,
-    priceOnRequest: getBoolean(formData, "priceOnRequest"),
+    price: getOptionalString(formData, "price"),
     seoTitleRu: getOptionalString(formData, "seoTitleRu"),
     seoTitleEn: getOptionalString(formData, "seoTitleEn"),
     seoDescriptionRu: getOptionalString(formData, "seoDescriptionRu"),
@@ -446,6 +466,10 @@ export async function uploadArtworkImageAction(formData: FormData): Promise<void
 
   if (file.size > 25 * 1024 * 1024) {
     redirect(`${returnTo}?error=Image%20must%20be%2025MB%20or%20smaller`);
+  }
+
+  if (!isSupportedArtworkImageUpload(file)) {
+    redirect(`${returnTo}?error=Only%20JPG%2C%20PNG%2C%20and%20WebP%20files%20are%20supported`);
   }
 
   try {

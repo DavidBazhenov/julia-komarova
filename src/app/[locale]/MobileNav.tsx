@@ -13,7 +13,6 @@ type MobileNavProps = {
   labels: {
     home: string;
     gallery: string;
-    exhibitions: string;
     about: string;
     contacts: string;
     menu: string;
@@ -33,7 +32,6 @@ export function MobileNav({ locale, labels }: MobileNavProps) {
   const items = [
     { href: buildLocalePath(locale, "/"), label: labels.home },
     { href: buildLocalePath(locale, "/gallery"), label: labels.gallery },
-    { href: buildLocalePath(locale, "/exhibitions"), label: labels.exhibitions },
     { href: buildLocalePath(locale, "/about"), label: labels.about },
     { href: buildLocalePath(locale, "/contacts"), label: labels.contacts },
     {

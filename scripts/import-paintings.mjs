@@ -151,7 +151,6 @@ function buildArtworkPayload({ index, categoryIds, width, height }) {
     isFeatured: index < 6,
     isPublished: true,
     sortOrder: index + 1,
-    priceOnRequest: true,
     seoTitle: `${titleRu} | Юлия Комарова`,
     seoTitleRu: `${titleRu} | Юлия Комарова`,
     seoTitleEn: `${titleEn} | Julia Komarova`,

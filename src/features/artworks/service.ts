@@ -34,6 +34,7 @@ type ArtworkListRecord = {
   titleEn?: string | null;
   year: number | null;
   status: ArtworkListItem['status'];
+  price: string | null;
   description: string | null;
   descriptionRu?: string | null;
   descriptionEn?: string | null;
@@ -45,6 +46,8 @@ type ArtworkListRecord = {
 
 type ArtworkDetailRecord = ArtworkListRecord & {
   medium: string | null;
+  mediumRu?: string | null;
+  mediumEn?: string | null;
   dimensions: string | null;
 };
 
@@ -204,6 +207,7 @@ export async function listArtworks(input: ListArtworksInput = {}): Promise<Artwo
       titleEn: item.titleEn ?? item.title,
       year: item.year,
       status: item.status,
+      price: item.price,
       excerpt:
         pickLocalizedValue(locale, {
           ru: item.descriptionRu,
@@ -283,6 +287,7 @@ export async function getArtworkBySlug(
         titleEn: item.titleEn ?? item.title,
         year: item.year,
         status: item.status,
+        price: item.price,
         excerpt:
           pickLocalizedValue(locale, {
             ru: item.descriptionRu,
@@ -303,7 +308,14 @@ export async function getArtworkBySlug(
           }) ?? '',
         descriptionRu: item.descriptionRu ?? item.description ?? undefined,
         descriptionEn: item.descriptionEn ?? item.description ?? undefined,
-        medium: item.medium ?? '',
+        medium:
+          pickLocalizedValue(locale, {
+            ru: item.mediumRu,
+            en: item.mediumEn,
+            fallback: item.medium,
+          }) ?? '',
+        mediumRu: item.mediumRu ?? item.medium ?? undefined,
+        mediumEn: item.mediumEn ?? item.medium ?? undefined,
         dimensions: item.dimensions ?? '',
         images: item.images.map(mapArtworkImage),
         relatedWorks: relatedWorks

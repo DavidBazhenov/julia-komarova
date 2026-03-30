@@ -67,9 +67,6 @@ export default async function LocaleLayout({
             <Link href={buildLocalePath(locale, "/gallery")} className={styles.navLink}>
               {tNav("gallery")}
             </Link>
-            <Link href={buildLocalePath(locale, "/exhibitions")} className={styles.navLink}>
-              {tNav("exhibitions")}
-            </Link>
             <Link href={buildLocalePath(locale, "/about")} className={styles.navLink}>
               {tNav("about")}
             </Link>
@@ -85,7 +82,6 @@ export default async function LocaleLayout({
               labels={{
                 home: tNav("home"),
                 gallery: tNav("gallery"),
-                exhibitions: tNav("exhibitions"),
                 about: tNav("about"),
                 contacts: tNav("contacts"),
                 menu: locale === "ru" ? "Меню" : "Menu",
@@ -121,9 +117,6 @@ export default async function LocaleLayout({
                   <Link className={styles.footerLink} href={buildLocalePath(locale, "/gallery")}>
                     {tNav("gallery")}
                   </Link>
-                  <Link className={styles.footerLink} href={buildLocalePath(locale, "/exhibitions")}>
-                    {tNav("exhibitions")}
-                  </Link>
                   <Link className={styles.footerLink} href={buildLocalePath(locale, "/about")}>
                     {tNav("about")}
                   </Link>
@@ -138,16 +131,16 @@ export default async function LocaleLayout({
                   {locale === "ru" ? "Контакты и соцсети" : "Contact & social"}
                 </p>
                 <div className={styles.footerContactList}>
-                  <a className={styles.footerLink} href="mailto:hello@juliakomarova.art">
-                    hello@juliakomarova.art
-                  </a>
                   <a
                     className={styles.footerLink}
-                    href="https://wa.me/79850665300"
+                    href="https://t.me/jk_JuliaKomarova"
                     target="_blank"
                     rel="noreferrer"
                   >
-                    WhatsApp: +7 985 066 5300
+                    Telegram
+                  </a>
+                  <a className={styles.footerLink} href="tel:+79850665300">
+                    +7 985 066 5300
                   </a>
                   <a
                     className={styles.footerLink}

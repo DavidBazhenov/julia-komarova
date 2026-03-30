@@ -77,6 +77,8 @@
 .meta {
   display: grid;
   gap: 0.28rem;
+  align-content: start;
+  min-height: 6.9rem;
 }
 
 .eyebrow {
@@ -100,6 +102,18 @@
   color: var(--color-muted);
   font-size: 0.95rem;
   line-height: 1.55;
+}
+
+.price {
+  margin: 0.12rem 0 0;
+  color: var(--color-accent);
+  font-size: 0.92rem;
+  font-weight: 600;
+  min-height: 1.4rem;
+}
+
+.pricePlaceholder {
+  visibility: hidden;
 }
 
 @media (max-width: 767px) {

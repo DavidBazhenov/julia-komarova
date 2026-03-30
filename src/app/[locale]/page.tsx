@@ -6,7 +6,7 @@ import Link from "next/link";
 import aboutPhoto from "../../../public/images/about-photo.jpg";
 import heroImage from "../../../public/images/hero-home-direct.webp";
 
-import { Button, Container, NewsCarousel, Section } from "../../shared/ui";
+import { Button, Container, Section } from "../../shared/ui";
 import { ArtworkCarousel } from "../../shared/ui/artwork-carousel";
 
 import {
@@ -61,7 +61,7 @@ export default async function HomePage({
   ]);
   const data = await loadLocalizedHomeData(locale);
 
-  if (data.featuredArtworks.length === 0 || data.exhibitions.length === 0) {
+  if (data.featuredArtworks.length === 0) {
     noStore();
   }
   const heroImageAlt =
@@ -85,6 +85,8 @@ export default async function HomePage({
       ? "Имею профессиональный опыт в дизайне и полиграфии, который сформировал точное чувство композиции и цвета. Сегодня полностью сосредоточена на живописи и графике."
       : "Professional experience in design and print shaped a precise sense of composition and color. Today fully focused on painting and graphics.";
 
+  const heroName = tHome("heroName");
+
   return (
     <>
       <script
@@ -103,7 +105,7 @@ export default async function HomePage({
                 className={styles.heroPainting}
               />
               <div className={styles.heroOverlay}>
-                <h1 className={styles.heroOverlayTitle}>Julia Komarova</h1>
+                <h1 className={styles.heroOverlayTitle}>{heroName}</h1>
                 <p className={styles.heroOverlayRole}>
                   {locale === "ru" ? "Художник | Интерьерная живопись" : "Artist | Interior painting"}
                 </p>
@@ -158,15 +160,6 @@ export default async function HomePage({
         <div className={styles.sectionLinkRow}>
           <Link href={`/${locale}/gallery`} className={styles.sectionLink}>
             {tHome("featuredMore")}
-          </Link>
-        </div>
-      </Section>
-
-      <Section title={tHome("newsTitle")}>
-        <NewsCarousel items={data.exhibitions} fallbackHref={`/${locale}/exhibitions`} />
-        <div className={styles.sectionLinkRow}>
-          <Link href={`/${locale}/exhibitions`} className={styles.sectionLink}>
-            {tHome("newsMore")}
           </Link>
         </div>
       </Section>

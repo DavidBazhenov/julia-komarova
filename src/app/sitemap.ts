@@ -4,7 +4,7 @@ import { listArtworks } from "@/features/artworks";
 import { buildAbsoluteUrl } from "../shared/lib/metadata";
 import { locales } from "../shared/lib/i18n";
 
-const routes = ["/", "/gallery", "/exhibitions", "/about", "/contacts"];
+const routes = ["/", "/gallery", "/about", "/contacts"];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const artworks = await listArtworks({

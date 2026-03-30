@@ -19,6 +19,7 @@ export type ArtworkListItem = {
   titleEn?: string;
   year: number | null;
   status: ArtworkStatus;
+  price: string | null;
   excerpt?: string;
   excerptRu?: string;
   excerptEn?: string;

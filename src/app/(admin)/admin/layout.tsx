@@ -31,12 +31,6 @@ export default async function AdminLayout({ children }: { children: ReactNode })
               <Link className={styles.navLink} href="/admin/categories">
                 Categories
               </Link>
-              <Link className={styles.navLink} href="/admin/exhibitions">
-                Exhibitions
-              </Link>
-              <Link className={styles.navLink} href="/admin/exhibition-categories">
-                Exhibition categories
-              </Link>
               <form action={logoutAdminAction}>
                 <button className={styles.ghostButton} type="submit">
                   Logout

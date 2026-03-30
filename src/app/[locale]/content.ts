@@ -60,7 +60,6 @@ export type LocalizedExhibitionCategory = ExhibitionCategoryListItem & {
 
 export type HomePageData = {
   featuredArtworks: LocalizedArtworkListItem[];
-  exhibitions: LocalizedExhibitionItem[];
 };
 
 export type GalleryPageData = {
@@ -232,20 +231,10 @@ async function resolveExhibitionLabel(locale: Locale, item: ExhibitionListItem):
 
 export async function loadLocalizedHomeData(locale: Locale): Promise<HomePageData> {
   const tArtwork = await getTranslations({locale, namespace: "Artwork"});
-  const [featuredArtworks, exhibitions] = await Promise.all([
-    listFeaturedArtworks(12, locale),
-    listExhibitions({limit: 6, publishedOnly: true, locale})
-  ]);
-
-  const localizedExhibitions = await Promise.all(
-    exhibitions.map(async (item) =>
-      localizeExhibitionItem(await resolveExhibitionLabel(locale, item), item)
-    )
-  );
+  const featuredArtworks = await listFeaturedArtworks(12, locale);
 
   return {
-    featuredArtworks: featuredArtworks.map((item) => localizeArtworkListItem(tArtwork("fallbackTitle"), item)),
-    exhibitions: localizedExhibitions
+    featuredArtworks: featuredArtworks.map((item) => localizeArtworkListItem(tArtwork("fallbackTitle"), item))
   };
 }
 

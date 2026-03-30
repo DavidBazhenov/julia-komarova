@@ -9,6 +9,7 @@ type ArtworkCardProps = {
   href: string;
   title: string;
   subtitle: string;
+  price?: string;
   eyebrow?: string;
   imageUrl?: string | null;
   imageAlt?: string;
@@ -16,16 +17,32 @@ type ArtworkCardProps = {
   variant: "home" | "gallery" | "related";
 };
 
+function formatArtworkCardPrice(price?: string): string | null {
+  const value = price?.trim();
+  if (!value) {
+    return null;
+  }
+
+  if (/[₽$€£¥]|руб|usd|eur/i.test(value)) {
+    return value;
+  }
+
+  return `${value} ₽`;
+}
+
 export function ArtworkCard({
   href,
   title,
   subtitle,
+  price,
   eyebrow,
   imageUrl,
   imageAlt,
   tone = "forest",
   variant,
 }: ArtworkCardProps) {
+  const formattedPrice = formatArtworkCardPrice(price);
+
   return (
     <Link href={href} className={styles.card}>
       <div className={styles.frame} data-variant={variant}>
@@ -48,6 +65,9 @@ export function ArtworkCard({
         {eyebrow ? <p className={styles.eyebrow}>{eyebrow}</p> : null}
         <h3 className={styles.title}>{title}</h3>
         <p className={styles.subtitle}>{subtitle}</p>
+        <p className={`${styles.price} ${formattedPrice ? "" : styles.pricePlaceholder}`}>
+          {formattedPrice ?? "\u00A0"}
+        </p>
       </div>
     </Link>
   );

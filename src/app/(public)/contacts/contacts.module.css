@@ -20,7 +20,7 @@
 
 .title {
   margin: 0;
-  max-width: 12ch;
+  width: 100%;
   font-family: var(--font-display);
   font-size: clamp(2.4rem, 5vw, 4.5rem);
   line-height: 0.95;
@@ -161,5 +161,11 @@
 
   .fieldGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1100px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }

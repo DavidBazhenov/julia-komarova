@@ -123,6 +123,12 @@ export default async function ArtworkPage({
               <dt>{tArtwork("labels.size")}</dt>
               <dd>{artwork.dimensions}</dd>
             </div>
+            {artwork.price ? (
+              <div>
+                <dt>{tArtwork("labels.price")}</dt>
+                <dd>{artwork.price}</dd>
+              </div>
+            ) : null}
             <div>
               <dt>{tArtwork("labels.status")}</dt>
               <dd>{tStatuses(artwork.status)}</dd>

@@ -75,7 +75,7 @@ model Artwork {
   isFeatured        Boolean       @default(false)
   isPublished       Boolean       @default(false)
   sortOrder         Int           @default(0)
-  priceOnRequest    Boolean       @default(true)
+  price             String?
   seoTitle          String?
   seoTitleRu        String?
   seoTitleEn        String?

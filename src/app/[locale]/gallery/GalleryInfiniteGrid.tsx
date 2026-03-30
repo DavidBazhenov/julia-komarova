@@ -216,6 +216,7 @@ export function GalleryInfiniteGrid({
                 title={work.title}
                 eyebrow={work.series}
                 subtitle={`${work.year ?? ""}${work.status !== "AVAILABLE" ? ` · ${statusLabels[work.status]}` : ""}`.trim()}
+                price={work.price ?? undefined}
                 imageUrl={work.coverImage?.thumbnailUrl}
                 imageAlt={work.coverImage?.alt || work.title}
                 tone={work.tone}

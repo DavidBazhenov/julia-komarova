@@ -164,9 +164,84 @@
   gap: 1.25rem;
 }
 
+.artworksPage {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.artworkEditPage {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.artworksToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.artworksPage .listCard {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.pageHeader {
+  display: grid;
+  gap: 1rem;
+  padding: 1.25rem;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  background: rgb(255 255 255 / 35%);
+  box-shadow: var(--shadow-soft);
+}
+
 .panel,
 .listCard {
   padding: 1.25rem;
+}
+
+.artworkEditPanel {
+  display: grid;
+  gap: 1.1rem;
+  width: 100%;
+  padding: 1.35rem;
+  background: transparent;
+  box-shadow: none;
+}
+
+.artworkEditSections {
+  display: grid;
+  gap: 1rem;
+  width: 100%;
+}
+
+.artworkEditSection {
+  display: grid;
+  gap: 1rem;
+  width: 100%;
+  padding: 1.05rem 1.1rem;
+  border-top: 1px solid color-mix(in srgb, var(--color-line) 78%, transparent);
+}
+
+.artworkEditLead {
+  display: grid;
+  gap: 0.55rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-line) 78%, transparent);
+}
+
+.artworkEditBackLink {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  min-height: 2.35rem;
+  padding: 0.55rem 0.85rem;
+  border: 1px solid var(--color-line);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 72%);
+  color: inherit;
+  text-decoration: none;
 }
 
 .panelTitle,
@@ -189,7 +264,50 @@
   gap: 1rem;
 }
 
+.artworkEditorForm {
+  gap: 1.1rem;
+}
+
+.formSection {
+  display: grid;
+  gap: 1rem;
+  padding: 1.05rem 1.1rem;
+  border: 1px solid color-mix(in srgb, var(--color-line) 82%, transparent);
+  border-radius: 1.35rem;
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 88%), rgb(248 243 231 / 76%)),
+    rgb(255 255 255 / 76%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 92%),
+    0 0.5rem 1.4rem rgb(24 31 18 / 4%);
+}
+
+.formSectionHeader {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.formSectionTitle {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.formSectionHint {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
 .fieldGrid {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.fieldGridTriple,
+.relationshipGrid {
   display: grid;
   gap: 0.9rem;
 }
@@ -362,37 +480,50 @@
 
 .artworkAdminList {
   display: grid;
-  gap: 1rem;
+  gap: 1.2rem;
 }
 
 .artworkAdminCard {
   display: grid;
-  gap: 1rem;
-  padding: 1rem;
-  border: 1px solid var(--color-line);
-  border-radius: 1.25rem;
-  background: rgb(255 255 255 / 52%);
+  gap: 1.1rem;
+  padding: 1.15rem;
+  border: 1px solid color-mix(in srgb, var(--color-line) 82%, transparent);
+  border-radius: 1.5rem;
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 88%), rgb(247 242 229 / 78%)),
+    rgb(255 255 255 / 88%);
+  box-shadow:
+    0 1.25rem 2.5rem rgb(24 31 18 / 7%),
+    inset 0 1px 0 rgb(255 255 255 / 92%);
+  justify-items: start;
 }
 
 .artworkAdminPreview {
   display: grid;
+  gap: 1rem;
+  width: 100%;
 }
 
 .artworkAdminThumbFrame {
   display: grid;
   place-items: center;
   width: 100%;
-  max-width: 16rem;
+  min-height: 18rem;
   aspect-ratio: 1 / 1;
-  padding: 1rem;
-  border: 1px solid var(--color-line);
-  border-radius: 1rem;
-  background: rgb(246 241 225 / 88%);
+  padding: 1.1rem;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--color-line) 75%, transparent);
+  border-radius: 1.15rem;
+  background:
+    radial-gradient(circle at top, rgb(255 255 255 / 78%), transparent 55%),
+    linear-gradient(180deg, rgb(244 239 225 / 96%), rgb(235 228 210 / 72%));
 }
 
 .artworkAdminThumb {
   width: 100%;
   height: 100%;
+  max-width: 100%;
+  max-height: 100%;
   object-fit: contain;
 }
 
@@ -407,52 +538,13 @@
   background: rgb(255 255 255 / 48%);
 }
 
-.artworkAdminBody {
-  display: grid;
-  gap: 0.9rem;
-}
-
-.artworkAdminHeading {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: start;
-  justify-content: space-between;
-  gap: 0.75rem;
-}
-
 .artworkAdminTitle {
-  margin: 0.15rem 0 0;
-  font-size: 1.25rem;
-}
-
-.artworkAdminSubtitle {
-  margin: 0.25rem 0 0;
-  color: var(--color-muted);
-}
-
-.artworkAdminPills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.45rem;
-}
-
-.statusPill,
-.metaPill {
-  display: inline-flex;
-  align-items: center;
-  min-height: 2rem;
-  padding: 0.35rem 0.7rem;
-  border-radius: 999px;
-  border: 1px solid var(--color-line);
-  background: rgb(255 255 255 / 75%);
-  font-size: 0.78rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
-.statusPill {
-  background: color-mix(in srgb, var(--color-accent) 10%, white);
-  border-color: color-mix(in srgb, var(--color-accent) 28%, var(--color-line));
+  margin: 0;
+  width: 100%;
+  font-family: var(--font-display);
+  font-size: clamp(1.15rem, 1.5vw, 1.45rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
 }
 
 .artworkAdminMeta {
@@ -484,8 +576,9 @@
 
 .artworkAdminActions {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 0.65rem;
+  width: 100%;
 }
 
 .primaryLinkButton,
@@ -497,6 +590,9 @@
   padding: 0.75rem 1rem;
   border-radius: 999px;
   text-decoration: none;
+  flex: 1 1 0;
+  font-size: 0.92rem;
+  font-weight: 600;
 }
 
 .primaryLinkButton {
@@ -692,15 +788,19 @@
 }
 
 .imageStrip {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
+  display: grid;
+  gap: 0.85rem;
 }
 
 .thumbCard {
   display: grid;
-  gap: 0.35rem;
-  width: 5.5rem;
+  gap: 0.55rem;
+  width: 100%;
+  max-width: 14rem;
+}
+
+.thumbImageWrap {
+  position: relative;
 }
 
 .thumbImage {
@@ -712,6 +812,26 @@
   background: rgb(246 241 225 / 88%);
 }
 
+.thumbDeleteForm {
+  position: absolute;
+  top: 0.55rem;
+  right: 0.55rem;
+}
+
+.thumbDeleteButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.15rem;
+  height: 2.15rem;
+  border: 1px solid rgb(144 58 42 / 22%);
+  border-radius: 999px;
+  background: rgb(255 252 248 / 92%);
+  color: rgb(113 42 28);
+  cursor: pointer;
+  box-shadow: 0 0.35rem 0.9rem rgb(24 31 18 / 10%);
+}
+
 .inlineUploadForm {
   display: grid;
   gap: 0.75rem;
@@ -720,12 +840,19 @@
 
 .thumbActions {
   display: flex;
-  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: nowrap;
   gap: 0.35rem;
+}
+
+.thumbActions form {
+  flex: 1 1 0;
 }
 
 .miniButton,
 .dangerButton {
+  width: 100%;
   min-height: 1.85rem;
   padding: 0.3rem 0.55rem;
   border-radius: 999px;
@@ -741,17 +868,44 @@
   background: rgb(196 96 69 / 10%);
 }
 
+.iconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 2.35rem;
+  border: 1px solid var(--color-line);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 82%);
+  color: var(--color-accent);
+  cursor: pointer;
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
 @media (min-width: 900px) {
   .summaryGrid {
     grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 
-  .entityGrid {
+  .entityGrid:not(.artworksPage):not(.artworkEditPage) {
     grid-template-columns: minmax(18rem, 26rem) minmax(0, 1fr);
     align-items: start;
   }
 
   .fieldGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .fieldGridTriple {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .relationshipGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .artworkEditorForm .checkboxGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -763,12 +917,60 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .artworkAdminCard {
-    grid-template-columns: minmax(13rem, 16rem) minmax(0, 1fr);
+  .artworkAdminFacts {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .artworkAdminList {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     align-items: start;
   }
 
-  .artworkAdminFacts {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+  .artworkAdminCard {
+    height: 100%;
+  }
+
+  .artworkAdminThumbFrame {
+    min-height: 19rem;
+  }
+
+  .imageStrip {
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  }
+}
+
+@media (max-width: 599px) {
+  .artworkEditPanel {
+    padding: 1rem;
+  }
+
+  .artworkEditSection {
+    padding: 0.95rem 0;
+  }
+
+  .formSection {
+    padding: 0.95rem;
+    border-radius: 1.1rem;
+  }
+
+  .artworkAdminCard {
+    padding: 0.95rem;
+    border-radius: 1.2rem;
+  }
+
+  .artworkAdminThumbFrame {
+    min-height: 15rem;
+    padding: 0.85rem;
+  }
+
+  .artworkAdminActions {
+    gap: 0.5rem;
+  }
+
+  .primaryLinkButton,
+  .secondaryLinkButton {
+    min-height: 2.5rem;
+    padding: 0.7rem 0.85rem;
+    font-size: 0.86rem;
   }
 }
