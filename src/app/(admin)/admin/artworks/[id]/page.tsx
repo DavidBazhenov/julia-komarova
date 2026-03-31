@@ -6,7 +6,7 @@ import { getArtworkAdminById } from "@/features/artworks/admin";
 import { listAdminCategories } from "@/features/categories";
 import { readAdminSession } from "@/server/auth";
 
-import { updateArtworkAction } from "../../actions";
+import { deleteArtworkAction, updateArtworkAction } from "../../actions";
 import styles from "../../admin.module.css";
 import { ArtworkEditorForm } from "../ArtworkEditorForm";
 import { ArtworkMediaManager } from "../ArtworkMediaManager";
@@ -80,6 +80,13 @@ export default async function AdminArtworkEditPage({
               submitLabel="Save artwork"
               returnTo={`/admin/artworks/${artwork.id}`}
             />
+            <form action={deleteArtworkAction} className={styles.form}>
+              <input type="hidden" name="artworkId" value={artwork.id} />
+              <input type="hidden" name="returnTo" value={`/admin/artworks/${artwork.id}`} />
+              <button className={styles.dangerButton} type="submit">
+                Delete artwork
+              </button>
+            </form>
           </div>
         </div>
       </div>

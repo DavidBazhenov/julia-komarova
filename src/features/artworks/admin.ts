@@ -740,6 +740,59 @@ export async function deleteArtworkImage(input: {
   }
 }
 
+export async function deleteArtwork(artworkId: string): Promise<{ slug: string; imageCount: number }> {
+  const artwork = await getArtworkWithImagesForMutation(artworkId);
+  if (!artwork) {
+    throw new Error(`Artwork does not exist: ${artworkId}`);
+  }
+
+  const artworkIdsToUnlink = await prisma.artwork.findMany({
+    where: {
+      id: { not: artworkId },
+      relatedArtworkIds: { has: artworkId },
+    },
+    select: {
+      id: true,
+      relatedArtworkIds: true,
+    },
+  });
+
+  await prisma.$transaction([
+    ...artworkIdsToUnlink.map((item) =>
+      prisma.artwork.update({
+        where: { id: item.id },
+        data: {
+          relatedArtworkIds: item.relatedArtworkIds.filter((id) => id !== artworkId),
+        },
+      }),
+    ),
+    prisma.inquiry.updateMany({
+      where: { artworkId },
+      data: { artworkId: null },
+    }),
+    prisma.artworkImage.deleteMany({
+      where: { artworkId },
+    }),
+    prisma.artwork.delete({
+      where: { id: artworkId },
+    }),
+  ]);
+
+  await Promise.all(
+    artwork.images.map(async (image) => {
+      const storageImageId = image.storageKey.split('/').at(-1);
+      if (storageImageId) {
+        await removeArtworkImageDir(artworkId, storageImageId);
+      }
+    }),
+  );
+
+  return {
+    slug: artwork.slug,
+    imageCount: artwork.images.length,
+  };
+}
+
 export async function getArtworkAdminSummary(): Promise<ArtworkAdminSummary> {
   const [total, published, featured, available, sold, reserved, notForSale] = await Promise.all([
     prisma.artwork.count(),

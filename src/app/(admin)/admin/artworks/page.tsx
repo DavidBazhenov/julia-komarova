@@ -15,6 +15,7 @@ import { ArtworkEditorForm } from "./ArtworkEditorForm";
 type ArtworksPageProps = {
   searchParams?: Promise<{
     created?: string;
+    deleted?: string;
     uploaded?: string;
     updated?: string;
     error?: string;
@@ -56,6 +57,9 @@ export default async function AdminArtworksPage({
 
       {resolvedSearchParams?.created ? (
         <p className={styles.notice}>Artwork created.</p>
+      ) : null}
+      {resolvedSearchParams?.deleted ? (
+        <p className={styles.notice}>Artwork deleted.</p>
       ) : null}
       {resolvedSearchParams?.uploaded ? (
         <p className={styles.notice}>Image uploaded.</p>

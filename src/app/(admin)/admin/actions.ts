@@ -7,6 +7,7 @@ import {
   createArtwork,
   createCategory,
   createExhibitionCategory,
+  deleteArtwork,
   deleteCategory,
   deleteExhibitionCategory,
   createExhibition,
@@ -448,6 +449,33 @@ export async function updateArtworkAction(formData: FormData): Promise<void> {
   }
 
   redirect(`${returnTo}?updated=1`);
+}
+
+export async function deleteArtworkAction(formData: FormData): Promise<void> {
+  await assertAdminSession();
+
+  const artworkId = getString(formData, "artworkId");
+  const returnTo = getReturnTo(formData, "/admin/artworks");
+  let deletedSlug: string | null = null;
+
+  try {
+    const deleted = await deleteArtwork(artworkId);
+    deletedSlug = deleted.slug;
+
+    revalidateArtworkContent();
+    revalidatePublicHome();
+    revalidatePublicGallery();
+  } catch (error) {
+    const message =
+      error instanceof Error ? encodeURIComponent(error.message) : "unknown";
+    redirect(`${returnTo}?error=${message}`);
+  }
+
+  if (deletedSlug) {
+    revalidatePublicArtwork(deletedSlug);
+  }
+
+  redirect("/admin/artworks?deleted=1");
 }
 
 export async function uploadArtworkImageAction(formData: FormData): Promise<void> {
