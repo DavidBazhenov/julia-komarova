@@ -48,21 +48,7 @@ export default async function AdminDashboardPage() {
     return `${value.toFixed(value >= 10 || exponent === 0 ? 0 : 1)} ${units[exponent]}`;
   }
 
-  function renderStorageMeta(): string | null {
-    if (!storage) {
-      return null;
-    }
-
-    if (storage.source === "quota") {
-      return `Uploads use ${formatBytes(storage.uploadsBytes)} in ${storage.rootPath}. ${storage.freePercent.toFixed(
-        1,
-      )}% of the upload quota is still free.`;
-    }
-
-    return `Uploads use ${formatBytes(storage.uploadsBytes)} in ${storage.rootPath}. The host volume currently has ${formatBytes(
-      storage.usedBytes,
-    )} used and ${formatBytes(storage.freeBytes)} free.`;
-  }
+  const storageUsedPercent = storage ? Math.max(0, Math.min(100, 100 - storage.freePercent)) : 0;
 
   return (
     <>
@@ -95,35 +81,28 @@ export default async function AdminDashboardPage() {
             {artworks.sold} sold, {artworks.reserved} reserved
           </p>
         </article>
-        <article className={styles.summaryCard}>
+        <article className={`${styles.summaryCard} ${styles.summaryCardStorage}`}>
           <span className={styles.summaryLabel}>Storage</span>
           <strong className={styles.summaryValue}>
             {storage ? formatBytes(storage.freeBytes) : "—"}
           </strong>
           <p className={styles.muted}>
-            {storage
-              ? `${storage.source === "quota" ? "free of upload quota" : "free of"} ${formatBytes(storage.totalBytes)}`
-              : "Storage metrics are unavailable."}
+            {storage ? `из ${formatBytes(storage.totalBytes)}` : "Storage metrics are unavailable."}
           </p>
           {storage ? (
-            <>
+            <div
+              className={styles.storageBar}
+              role="progressbar"
+              aria-label="Used storage"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={Math.round(storageUsedPercent)}
+            >
               <div
-                className={styles.storageBar}
-                role="progressbar"
-                aria-label="Free storage"
-                aria-valuemin={0}
-                aria-valuemax={100}
-                aria-valuenow={Math.round(storage.freePercent)}
-              >
-                <div
-                  className={styles.storageBarFill}
-                  style={{ width: `${storage.freePercent}%` }}
-                />
-              </div>
-              <p className={styles.storageMeta}>
-                {renderStorageMeta()}
-              </p>
-            </>
+                className={styles.storageBarFill}
+                style={{ width: `${storageUsedPercent}%` }}
+              />
+            </div>
           ) : null}
         </article>
       </section>

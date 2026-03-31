@@ -120,6 +120,11 @@
   padding: 1.1rem 1.2rem;
   display: grid;
   gap: 0.35rem;
+  min-width: 0;
+}
+
+.summaryCardStorage {
+  grid-column: 1 / -1;
 }
 
 .storageBar {
@@ -137,13 +142,6 @@
   height: 100%;
   border-radius: inherit;
   background: linear-gradient(90deg, rgb(89 138 55 / 95%), rgb(50 81 24 / 95%));
-}
-
-.storageMeta {
-  margin: 0.15rem 0 0;
-  color: var(--color-muted);
-  line-height: 1.55;
-  font-size: 0.92rem;
 }
 
 .summaryLabel {
@@ -888,6 +886,10 @@
     grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 
+  .summaryCardStorage {
+    grid-column: auto;
+  }
+
   .entityGrid:not(.artworksPage):not(.artworkEditPage) {
     grid-template-columns: minmax(18rem, 26rem) minmax(0, 1fr);
     align-items: start;
@@ -936,6 +938,31 @@
 
   .imageStrip {
     grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  }
+}
+
+@media (max-width: 899px) {
+  .summaryGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.7rem;
+  }
+
+  .summaryCard {
+    padding: 0.9rem 0.75rem;
+  }
+
+  .summaryLabel {
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+  }
+
+  .summaryValue {
+    font-size: 1.25rem;
+  }
+
+  .summaryCard > .muted {
+    font-size: 0.82rem;
+    line-height: 1.35;
   }
 }
 
