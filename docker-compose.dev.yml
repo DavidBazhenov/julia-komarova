@@ -21,7 +21,12 @@ services:
     depends_on:
       - mongo
     ports:
-      - '3000:3000'
+      - '127.0.0.1:3000:3000'
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '3'
     volumes:
       - .:/app
       - /app/node_modules
@@ -37,8 +42,11 @@ services:
         "cp /etc/mongo-keyfile /tmp/mongo-keyfile && chmod 600 /tmp/mongo-keyfile && exec mongod --replSet rs0 --bind_ip_all --keyFile /tmp/mongo-keyfile",
       ]
     restart: unless-stopped
-    ports:
-      - '27017:27017'
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '3'
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: rootpassword
